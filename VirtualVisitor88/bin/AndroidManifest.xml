@@ -27,6 +27,7 @@
             android:name="com.main.virtualvisitor88.CencerActivity"
             android:label="@string/app_name" >
         </activity>
+         <service android:name="WalkService" />
     </application>
 
 </manifest>
