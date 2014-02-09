@@ -1,42 +1,38 @@
 package com.main.virtualvisitor88;
 
-import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Handler;
+import android.os.RemoteCallbackList;
+import android.os.RemoteException;
 import android.util.Log;
-import android.widget.TextView;
 
 public class WalkCount  implements SensorEventListener, Runnable{
  
- 
-private SensorManager	mSensorManager; 	// センサーマネージャー
-private Sensor 			mAccelerometer;  			// 加速度センサー
-private Handler 		mHander = new Handler(); // 定期的に表示を切り替える
-private int 			flg 	= 0;
-private int				walkNum = 0;
-// 加速度センサーの値
-private float mAcceX;
-private float mAcceY;
-private float mAcceZ;
-
-String KEY = "walkValue";
-SharedPreferences pref;  
-SharedPreferences.Editor editor;
-
-WalkCount(SensorManager sm){
-	Log.i("test","test");
-
-	 this.mSensorManager = sm;  
-	 this.mAccelerometer = this.mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+	private SensorManager	mSensorManager; 	// センサーマネージャー
+	private Sensor 			mAccelerometer;  			// 加速度センサー
+	private Handler 		mHander = new Handler(); // 定期的に表示を切り替える
+	private int 			flg 	= 0;
+	private int				walkNum = 0;
+	// 加速度センサーの値
+	private float mAcceX;
+	private float mAcceY;
+	private float mAcceZ;
+	RemoteCallbackList<walkCallback> walkCallBack;
+	
+	WalkCount(SensorManager sm,RemoteCallbackList<walkCallback> walkCallBack){
+		Log.i("test","test");
+		this.walkCallBack 	= walkCallBack;
+	 	this.mSensorManager = sm;  
+	 	this.mAccelerometer = this.mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 	 
-	// センサーリスナーを登録する
-	this.mSensorManager.registerListener(
-	  this, this.mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
-	// 表示を切り替えるためのハンドラー
-	this.mHander.postDelayed(this, 50);
+	 	// センサーリスナーを登録する
+	 	this.mSensorManager.registerListener(
+		this, this.mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+		// 表示を切り替えるためのハンドラ
+		this.mHander.postDelayed(this, 50);
 	}
 
 	void stop() {  
@@ -65,13 +61,25 @@ WalkCount(SensorManager sm){
 	  	if(value < 9.0){
 	  		flg = 1;
 	  		walkNum++;
+	  	  Log.i("test",walkNum + " : " + flg + " : " + value);
+			int observerNum = walkCallBack.beginBroadcast();
+			Log.i("WalkService", "beginBroadcast" + observerNum);
+			for(int i = 0; i < observerNum; i++){
+				Log.i("WalkService", "Count:"+i);
+				try {
+					//RemoteCallbackList#getBroadcastItem()でCallback interfaceを取り出し
+					//Callback methodを呼び出す
+					walkCallBack.getBroadcastItem(i).updateWalkCount(walkNum);
+				} catch (RemoteException e) {
+				}
+			}	
+			walkCallBack.finishBroadcast();	  		
 	  	}
 	  }else{
-	  	if(value > 10.0){
+	  	if(value > 12.0){
 	  		flg = 0;
 	  	}  	
 	  }
-	  Log.i("test",walkNum + " : " + flg + " : " + value);
 	 }
 	}
 
@@ -79,14 +87,4 @@ WalkCount(SensorManager sm){
 	 // EditTextに表示する
 	 this.mHander.postDelayed(this, 50);
 	}
-
-	public void save(String value){
-		editor = pref.edit();  
-		// Editor に値を代入  
-		editor.putString(  
-			KEY,value
-		);  
-		// データの保存  
-		editor.commit();    
-	}  
 }

@@ -2,15 +2,21 @@ package com.main.virtualvisitor88;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.os.IBinder;
+import android.os.RemoteCallbackList;
+import android.os.RemoteException;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.res.Configuration;
 import android.support.v4.app.ActionBarDrawerToggle;
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.hardware.SensorManager;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.Menu;
 import android.widget.TextView;
 import android.view.MenuItem;
@@ -26,9 +32,12 @@ public class MainActivity extends Activity{
 	SensorManager	sm;
 	WalkCount		wc;
 	TextView 		tv;
-	String KEY = "walkValue";
+	String KEY 		= "walkValue";
+	String PREF_KEY	= "walkMem";
 	SharedPreferences pref;  
-
+	private activityCallback mService;
+	boolean mBind 	= false;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -59,16 +68,16 @@ public class MainActivity extends Activity{
         // Set the drawer toggle as the DrawerListener
         mDrawerLayout.setDrawerListener(mDrawerToggle);
         
-//        WCSample();		
+        WCSample();		
 	}
+	private RemoteCallbackList<walkCallback> walkCallBack = new RemoteCallbackList<walkCallback>();	
 
 	void WCSample(){
-		pref = getSharedPreferences(KEY, Activity.MODE_PRIVATE);  
 		tv  = new TextView(this);
-	//	tv.setText(pref.getString(PREF_KEY, "No Data"));
+		tv.setText("0");
 	    setContentView(tv);
 		startService();
-	//	stopService();		
+//		stopService();		
 	}
 
 	
@@ -108,11 +117,47 @@ public class MainActivity extends Activity{
   
         return super.onOptionsItemSelected(item);  
     }
+    
+	private walkCallback wCallback = new walkCallback.Stub() { //y1z
+		@Override
+		public void updateWalkCount(int walkNum) throws RemoteException {
+			// TODO Auto-generated method stub
+			Log.i("test", "call!!");
+			tv.setText(""+walkNum);
+		}
+    };    
+    
+    //ServiceConnection‚ğŠg’£‚µ‚½class‚ğÀ‘•‚·‚é
+    private ServiceConnection mConnection = new ServiceConnection(){
+    	
+    	//ServiceConnection#onServiceConntected()‚Ìˆø”‚Å“n‚³‚ê‚é
+    	//IBinder object‚ğ—˜—p‚µAIDL‚Å’è‹`‚µ‚½Interface‚ğæ“¾
+		public void onServiceConnected(ComponentName name, IBinder service) {
+			mService = activityCallback.Stub.asInterface(service);
+			try{
+				//æ“¾‚µ‚½interface‚ğ—˜—p‚µService—p‚ÌAIDL file‚Å’è‹`‚³‚ê‚½method‚ÅObserver“o˜^/‰ğœ
+				mService.setObserver(wCallback);
+			}catch(RemoteException e){
+			}
+		}
+		
+        //Service‚ğ“®‚©‚µ‚Ä‚éProcess‚ªcrash‚·‚é‚©kill‚³‚ê‚È‚¢ŒÀ‚èŒÄ‚Î‚ê‚È‚¢
+		public void onServiceDisconnected(ComponentName name) {
+			mService = null;
+		}
+	};
 	
 	void startService(){
-		startService( new Intent( MainActivity.this, WalkService.class ) );		
+		bindService(new Intent( MainActivity.this, WalkService.class ), mConnection, BIND_AUTO_CREATE);		
+		startService( new Intent( MainActivity.this, WalkService.class ));	
+		mBind = true;
 	}
 	void stopService(){
-		stopService( new Intent( MainActivity.this, WalkService.class ) );
+		if(mBind){
+			//Context#UnbindService()‚ÅService‚Æ‚ÌConnection‚ğ”jŠü
+			unbindService(mConnection);
+			stopService( new Intent( MainActivity.this, WalkService.class ) );
+			mBind = false;
+		}		
 	}
 }
