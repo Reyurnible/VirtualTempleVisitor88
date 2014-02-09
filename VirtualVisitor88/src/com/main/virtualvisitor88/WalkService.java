@@ -1,10 +1,8 @@
 package com.main.virtualvisitor88;
 
 import android.app.Service;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.hardware.SensorManager;
 import android.os.Handler;
 import android.os.IBinder;
