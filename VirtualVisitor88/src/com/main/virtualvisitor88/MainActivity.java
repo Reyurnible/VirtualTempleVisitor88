@@ -13,7 +13,6 @@ import android.support.v4.app.ActionBarDrawerToggle;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.content.SharedPreferences;
 import android.hardware.SensorManager;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
@@ -32,9 +31,6 @@ public class MainActivity extends Activity{
 	SensorManager	sm;
 	WalkCount		wc;
 	TextView 		tv;
-	String KEY 		= "walkValue";
-	String PREF_KEY	= "walkMem";
-	SharedPreferences pref;  
 	private activityCallback mService;
 	boolean mBind 	= false;
 	
@@ -61,9 +57,9 @@ public class MainActivity extends Activity{
                     }  
           
                     /** Called when a drawer has settled in a completely open state. */  
-                    public void onDrawerOpened(View drawerView) {  
+                     public void onDrawerOpened(View drawerView) {  
                         setTitle(mTitle);  
-                    }  
+                    } 
 			};
         // Set the drawer toggle as the DrawerListener
         mDrawerLayout.setDrawerListener(mDrawerToggle);
