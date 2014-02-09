@@ -9,5 +9,4 @@ public class SettingActivity extends Activity{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_setting);
 	}
-	
 }

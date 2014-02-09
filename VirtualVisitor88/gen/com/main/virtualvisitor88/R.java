@@ -8,6 +8,10 @@
 package com.main.virtualvisitor88;
 
 public final class R {
+    public static final class array {
+        public static final int entries_list_preference=0x7f090000;
+        public static final int entryvalues_list_preference=0x7f090001;
+    }
     public static final class attr {
     }
     public static final class dimen {
@@ -35,20 +39,8 @@ public final class R {
         public static final int infoSteps=0x7f080001;
         public static final int infoTemple=0x7f080003;
         public static final int left_drawer=0x7f080009;
-        public static final int name=0x7f08000a;
-        public static final int name_edit=0x7f08000b;
-        public static final int radio_man=0x7f08000d;
-        public static final int radio_woman=0x7f08000f;
-        public static final int reset_button=0x7f080015;
-        public static final int sex=0x7f08000c;
-        public static final int space=0x7f08000e;
-        public static final int space2=0x7f080014;
-        public static final int tall=0x7f080010;
-        public static final int tall_edit=0x7f080011;
         public static final int templeImage=0x7f080004;
-        public static final int value_id=0x7f080016;
-        public static final int weight=0x7f080012;
-        public static final int weight_edit=0x7f080013;
+        public static final int value_id=0x7f08000a;
     }
     public static final class layout {
         public static final int activity_drawer=0x7f030000;
