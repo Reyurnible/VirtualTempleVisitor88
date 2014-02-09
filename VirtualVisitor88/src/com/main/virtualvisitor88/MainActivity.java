@@ -5,8 +5,13 @@ import android.os.Bundle;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
+<<<<<<< HEAD
 import android.content.res.Configuration;
 import android.support.v4.app.ActionBarDrawerToggle;
+=======
+import android.content.Intent;
+import android.hardware.SensorManager;
+>>>>>>> 7ecb8c819607eef18def7a20246b48497d012928
 import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -16,15 +21,22 @@ import android.view.View;
 public class MainActivity extends Activity{
 
 	private DrawerLayout mDrawerLayout;
+<<<<<<< HEAD
 	private ActionBarDrawerToggle mDrawerToggle;
 	private CharSequence mTitle;
 	
+=======
+	SensorManager	sm;
+	WalkCount		wc;
+
+>>>>>>> 7ecb8c819607eef18def7a20246b48497d012928
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		mTitle = getTitle();
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+<<<<<<< HEAD
 		
 		// enable ActionBar app icon to behave as action to toggle nav drawer
         getActionBar().setDisplayHomeAsUpEnabled(true);
@@ -88,4 +100,13 @@ public class MainActivity extends Activity{
         return super.onOptionsItemSelected(item);  
     }
 
+=======
+		startService( new Intent( MainActivity.this, WalkService.class ) );
+		stopService();
+	}
+	
+	void stopService(){
+		stopService( new Intent( MainActivity.this, WalkService.class ) );
+	}
+>>>>>>> 7ecb8c819607eef18def7a20246b48497d012928
 }
