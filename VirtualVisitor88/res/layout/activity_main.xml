@@ -8,6 +8,13 @@
         android:id="@+id/content_frame"
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
+
+        <ImageView
+            android:id="@+id/imageMap"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/shikoku" />
+
     </FrameLayout>
     <!-- The navigation drawer -->
     <LinearLayout android:id="@+id/left_drawer"
