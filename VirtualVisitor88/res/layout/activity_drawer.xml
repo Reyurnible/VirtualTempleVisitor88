@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/infoDay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="日数:0日"
+        android:textSize="30sp" />
+
+    <TextView
+        android:id="@+id/infoSteps"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="歩数:0"
+        android:textSize="30sp" />
+
+    <TextView
+        android:id="@+id/infoDistance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="距離:0km"
+        android:textSize="30sp" />
+
+    <TextView
+        android:id="@+id/infoTemple"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="現在のお寺:"
+        android:textSize="30sp" />
+
+    <ImageView
+        android:id="@+id/templeImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/temple" />
+
+    <TextView
+        android:id="@+id/infoNextTemple"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="次のお寺:"
+        android:textSize="30sp" />
+
+    <TextView
+        android:id="@+id/infoNextTempleDistance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0km"
+        android:textSize="30sp" />
+
+</LinearLayout>
