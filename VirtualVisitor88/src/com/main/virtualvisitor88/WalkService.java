@@ -22,7 +22,7 @@ public class WalkService extends Service {
 	
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		Log.i("TestService", "onStartCommand");
+		Log.i("WalkService", "onStartCommand");
 		sm = (SensorManager)getSystemService(Context.SENSOR_SERVICE);
 		wc = new WalkCount(sm);
 		return START_STICKY;
@@ -30,14 +30,14 @@ public class WalkService extends Service {
 
 	@Override
 	public void onDestroy() {
-		Log.i("TestService", "onDestroy");
+		Log.i("WalkService", "onDestroy");
 		wc.stop();
 		Toast.makeText(this, "MyServiceÅ@onDestroy", Toast.LENGTH_SHORT).show();
 	}
 
 	@Override
 	public IBinder onBind(Intent arg0) {
-		Log.i("TestService", "onBind");
+		Log.i("WalkService", "onBind");
 		return null;
 	}
 }
