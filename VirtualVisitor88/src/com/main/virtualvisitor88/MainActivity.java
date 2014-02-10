@@ -1,6 +1,8 @@
 package com.main.virtualvisitor88;
 
 import java.text.NumberFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 import com.main.virtualvisitor88.Temples.Temple;
 
@@ -44,6 +46,8 @@ public class MainActivity extends Activity implements OnClickListener{
 	//この値は設定から呼び出す。
 	Double stepWidth=0.7;
 	
+	//OHENRO INFO
+	private final String SP_KEY = "OHENRO_KEY";
 	
 	private CharSequence mTitle;
 	SensorManager	sm;
@@ -54,6 +58,7 @@ public class MainActivity extends Activity implements OnClickListener{
 	//現在の動的な情報
 	int walkCount=0;
 	Temple nowTemple;
+	Date startDay;
 	
 	//各ビューパーツ
 	private DrawerLayout mDrawerLayout;
@@ -107,6 +112,10 @@ public class MainActivity extends Activity implements OnClickListener{
         // Set the drawer toggle as the DrawerListener
         mDrawerLayout.setDrawerListener(mDrawerToggle);
         
+        loadData();
+        setInfo();
+        setTemple(nowTemple);
+        setDate();
         WCSample();		
 	}
 	
@@ -148,6 +157,16 @@ public class MainActivity extends Activity implements OnClickListener{
 		infoNextTempleDistance = (TextView)findViewById(R.id.infoNextTempleDistance);
 		settingButton = (Button)findViewById(R.id.buttonSetting);
 	}
+	void setDate(){
+		Calendar cal = Calendar.getInstance();
+        Date date = cal.getTime();
+        //一日のミリ秒
+        long one_day_time = 1000*60*60*24;
+        //差分を一日の時間で割る
+        long diffDays = (date.getTime()-startDay.getTime())/one_day_time;
+        infoDay.setText("日数:"+diffDays+"日目");
+	}
+	
 	//ドロワーの中の情報セット
 	void setInfo(){
 		infoSteps.setText("歩数:"+walkCount);
@@ -155,25 +174,37 @@ public class MainActivity extends Activity implements OnClickListener{
 		nf=NumberFormat.getInstance();
 		nf.setMaximumFractionDigits(3);
 		if((walkCount*stepWidth)>1000){
-			
 			infoDistance.setText("距離:"+nf.format((walkCount*stepWidth)/1000)+"km");
 		}else{
 			infoDistance.setText("距離:"+nf.format((walkCount*stepWidth))+"m");
 		}
 	}
 	//ドロワーの中の寺情報セット
-	void setTemples(Temple temple){
-		infoTemple.setText("現在のお寺:"+temple.name);
+	void setTemple(Temple temple){
+		infoTemple.setText("現在のお寺:\n"+temple.name);
 		templeImage.setImageBitmap(Temples.getImage(temple.id,this));
-		infoNextTemple.setText("次のお寺:"+Temples.getTemple(temple.id+1).name);
-		infoNextTempleDistance.setText("次のお寺まで:"+Temples.getDistance(temple, Temples.getTemple(temple.id+1))+"km");
+		infoNextTemple.setText("次のお寺:\n"+Temples.getTemple(temple.id+1).name);
+		NumberFormat nf;
+		nf=NumberFormat.getInstance();
+		nf.setMaximumFractionDigits(3);
+		infoNextTempleDistance.setText("次のお寺まで:\n"+nf.format(Temples.getDistance(temple, Temples.getTemple(temple.id+1)))+"km");
+	}
+	void loadData(){
+		SharedPreferenceManager spm = new SharedPreferenceManager(SP_KEY, Activity.MODE_PRIVATE,this);
+		walkCount = spm.getStepCount();
+		nowTemple = spm.getTemple();
+		startDay = spm.getDate();
+		//歩幅（身長*0.5)
+		stepWidth=spm.getHeight()*0.5;
 	}
 	//メインコンテンツの画像をセットする
 	void setMapImage(Temple temple,int steps){
-		Point center = MapCalculation.getCentetPoint(temple, Temples.getTemple(temple.id+1), steps*stepWidth/ScaleMtoP);
-		Bitmap mapImage = MapCalculation.getMapBitmap(center,dispWidth,dispHeight,this);
-		ImageView mapImageView = (ImageView)findViewById(R.id.imageMap);
-		mapImageView.setImageBitmap(mapImage);
+		if(temple!=null){
+			Point center = MapCalculation.getCentetPoint(temple, Temples.getTemple(temple.id+1), steps*stepWidth/ScaleMtoP);
+			Bitmap mapImage = MapCalculation.getMapBitmap(center,dispWidth,dispHeight,this);
+			ImageView mapImageView = (ImageView)findViewById(R.id.imageMap);
+			mapImageView.setImageBitmap(mapImage);
+		}
 	}
 	
 	void WCSample(){
