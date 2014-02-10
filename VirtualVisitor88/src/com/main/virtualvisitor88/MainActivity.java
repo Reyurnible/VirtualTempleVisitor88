@@ -1,5 +1,7 @@
 package com.main.virtualvisitor88;
 
+import java.text.NumberFormat;
+
 import com.main.virtualvisitor88.Temples.Temple;
 
 import android.os.Build;
@@ -46,7 +48,8 @@ public class MainActivity extends Activity implements OnClickListener{
 	TextView 		tv;
 	private activityCallback mService;
 	boolean mBind 	= false;
-
+	
+	int walkCount=0;
 
 	TextView infoDay;
 	TextView infoSteps;
@@ -87,8 +90,9 @@ public class MainActivity extends Activity implements OnClickListener{
                 }
           
                     /** Called when a drawer has settled in a completely open state. */  
-                public void onDrawerOpened(View drawerView) {  
-                    setTitle(mTitle);  
+                public void onDrawerOpened(View drawerView) {
+                	setInfo();
+                    setTitle(mTitle);
                 } 
 			};
         // Set the drawer toggle as the DrawerListener
@@ -126,7 +130,20 @@ public class MainActivity extends Activity implements OnClickListener{
 		infoNextTempleDistance = (TextView)findViewById(R.id.infoNextTempleDistance);
 		settingButton = (Button)findViewById(R.id.buttonSetting);
 	}
-	
+	//ドロワーの中の情報セット
+	void setInfo(){
+		infoSteps.setText("歩数:"+walkCount);
+		NumberFormat nf;
+		nf=NumberFormat.getInstance();
+		nf.setMaximumFractionDigits(3);
+		if((walkCount*stepWidth)>1000){
+			
+			infoDistance.setText("距離:"+nf.format((walkCount*stepWidth)/1000)+"km");
+		}else{
+			infoDistance.setText("距離:"+nf.format((walkCount*stepWidth))+"m");
+		}
+	}
+	//ドロワーの中の寺情報セット
 	void setTemples(Temple temple){
 		infoTemple.setText("現在のお寺:"+temple.name);
 		templeImage.setImageBitmap(Temples.getImage(temple.id,this));
@@ -169,9 +186,9 @@ public class MainActivity extends Activity implements OnClickListener{
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        mDrawerToggle.onConfigurationChanged(newConfig);        
+        mDrawerToggle.onConfigurationChanged(newConfig);  
     }
-    @Override  
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {  
         // Pass the event to ActionBarDrawerToggle, if it returns  
         // true, then it has handled the app icon touch event
@@ -208,6 +225,8 @@ public class MainActivity extends Activity implements OnClickListener{
 		public void updateWalkCount(int walkNum) throws RemoteException {
 			// TODO Auto-generated method stub
 			Log.i("test", "call!!");
+			walkCount++;
+			setInfo();
 		}
     }; 
 	
