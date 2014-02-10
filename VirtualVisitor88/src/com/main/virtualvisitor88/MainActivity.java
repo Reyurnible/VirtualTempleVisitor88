@@ -120,8 +120,16 @@ public class MainActivity extends Activity implements OnClickListener{
 	}
 	
 	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// menu/activity_main.xmlからメニューを作成
+		getMenuInflater().inflate(R.menu.main, menu);
+		return true;
+	}
+	
+	@Override
 	protected void onResume(){
 		super.onResume();
+		settingButton.setBackgroundResource(R.drawable.parts_setting);
 		if(dispWidth!=0||dispHeight!=0){
 			//マップの表示を行う 現在のお寺と歩数で場所を特定できる。
 			setMapImage(nowTemple,walkCount);
@@ -195,14 +203,7 @@ public class MainActivity extends Activity implements OnClickListener{
 	void setTempleLink(final Temple temple){
     	ImageView templeImg = (ImageView)findViewById(R.id.templeImage);
     	templeImg.setClickable(true);
-    	templeImg.setOnClickListener(new OnClickListener() {
-            public void onClick(View v) {
-            	int id = temple.id - 1;
-                Intent objIntent = new Intent(getApplicationContext(),DetailActivity.class);
-                objIntent.putExtra("id",id);
-                startActivity(objIntent);
-            }
-        });
+    	templeImg.setOnClickListener(this);
 	}
 	void loadData(){
 		SharedPreferenceManager spm = new SharedPreferenceManager(SP_KEY, Activity.MODE_PRIVATE,this);
@@ -245,16 +246,6 @@ public class MainActivity extends Activity implements OnClickListener{
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         mDrawerToggle.onConfigurationChanged(newConfig);  
-    }
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {  
-        // Pass the event to ActionBarDrawerToggle, if it returns  
-        // true, then it has handled the app icon touch event
-        if (mDrawerToggle.onOptionsItemSelected(item)) {
-          return true;
-        }
-        // Handle your other action bar items...  
-        return super.onOptionsItemSelected(item);  
     }
     
     //ServiceConnectionを拡張したclassを実装する
@@ -308,18 +299,44 @@ public class MainActivity extends Activity implements OnClickListener{
 			mBind = false;
 		}		
 	}
+	
+	public void drawCharacter(){
+		
+	}
+	
 	@Override
 	public void onClick(View v) {
 		switch(v.getId()){
 			case R.id.buttonSetting:
+				settingButton.setBackgroundResource(R.drawable.parts_setting_f);
 				Intent intent = new Intent(this,SettingActivity.class);
 				startActivity(intent);
 				mapImageView.setImageBitmap(null);
 				mapImage.recycle();
 				mapImage=null;
 				break;
+			case R.id.templeImage:
+				int id = nowTemple.id - 1;
+		        Intent objIntent = new Intent(getApplicationContext(),DetailActivity.class);
+		        objIntent.putExtra("id",id);
+		        startActivity(objIntent);
+				break;
 			default:
 				break;
 		}
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item){
+		
+        if (mDrawerToggle.onOptionsItemSelected(item)){
+            return true;
+        }
+		if(item.getItemId() == R.id.menu_map){ // if使うとエラー（itemがInt形式なため）
+			Intent intent = new Intent(this,MapActivity.class);
+			startActivity(intent);
+		}
+		// Handle your other action bar items...  
+        return super.onOptionsItemSelected(item);
 	}
 }

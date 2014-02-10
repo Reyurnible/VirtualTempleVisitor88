@@ -13,7 +13,7 @@
             android:id="@+id/imageMap"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:src="@drawable/shikoku" />
+            android:src="@drawable/map_all" />
 
     </FrameLayout>
     <!-- The navigation drawer -->

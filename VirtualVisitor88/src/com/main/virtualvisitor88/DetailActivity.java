@@ -19,10 +19,11 @@ public class DetailActivity extends Activity{
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.detail);
+		int id = (Integer)getIntent().getSerializableExtra("id");
 		
 		TypedArray typedArray = getResources().obtainTypedArray(R.array.temple_all);  
 		int length = typedArray.length();  
-		int resourceId = typedArray.getResourceId(4,0);    
+		int resourceId = typedArray.getResourceId(id,0);    
 		// 配列の値を取得(ここではarray_sub1の各値)  
 		String[] array_str = getResources().getStringArray(resourceId);  		
 		TypedArray dataArray = getResources().obtainTypedArray(resourceId); 

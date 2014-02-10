@@ -9,53 +9,57 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="日数:0日"
-        android:textSize="30sp" />
+        android:textSize="24sp" />
 
     <TextView
         android:id="@+id/infoSteps"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="歩数:0"
-        android:textSize="30sp" />
+        android:textSize="24sp" />
 
     <TextView
         android:id="@+id/infoDistance"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="距離:0km"
-        android:textSize="30sp" />
+        android:textSize="24sp" />
 
     <TextView
         android:id="@+id/infoTemple"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
         android:text="現在のお寺:"
-        android:textSize="30sp" />
+        android:textSize="24sp" />
 
     <ImageView
         android:id="@+id/templeImage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/temple" />
+        android:layout_width="144dp"
+        android:layout_height="144dp"
+        android:src="@drawable/tera" />
 
     <TextView
         android:id="@+id/infoNextTemple"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="次のお寺:"
-        android:textSize="30sp" />
+        android:textSize="24sp" />
 
     <TextView
         android:id="@+id/infoNextTempleDistance"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="0km"
-        android:textSize="30sp" />
+        android:textSize="24sp" />
 
     <Button
         android:id="@+id/buttonSetting"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="設定ボタン" />
+        android:layout_width="150dp"
+        android:layout_height="50dp"
+        android:layout_marginLeft="45dp"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/parts_setting"
+        android:text=" " />
 
 </LinearLayout>

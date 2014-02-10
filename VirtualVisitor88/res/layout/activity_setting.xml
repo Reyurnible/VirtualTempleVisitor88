@@ -30,7 +30,7 @@
 　　　　<Preference 
     android:summary="Reset" 
     android:title="Reset" 
-    android:key="reset" 
+    android:key="@+id/reset" 
     android:layout="@layout/resetbutton">
 　　　　</Preference>
 　　</PreferenceCategory>

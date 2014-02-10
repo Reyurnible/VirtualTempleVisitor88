@@ -39,8 +39,8 @@ public class WalkService extends Service{
 	//ê∂ê¨ÇµÇΩStub classÇService#onBind()Ç≈returnÇ∑ÇÈ
 	@Override
 	public IBinder onBind(Intent arg0) {
-		Toast.makeText(this, "onBind called by "
-			  + Thread.currentThread().getName(), Toast.LENGTH_LONG).show();
+//		Toast.makeText(this, "onBind called by "
+//			  + Thread.currentThread().getName(), Toast.LENGTH_LONG).show();
 		return activityCallBack;
 	}
 		
@@ -61,7 +61,7 @@ public class WalkService extends Service{
 	public void onDestroy() {
 		Log.i("WalkService", "onDestroy");
 		wc.stop();
-		Toast.makeText(this, "MyService onDestroy", Toast.LENGTH_SHORT).show();
+//		Toast.makeText(this, "MyService onDestroy", Toast.LENGTH_SHORT).show();
 	}
 
 }
