@@ -46,11 +46,8 @@ public class MainActivity extends Activity implements OnClickListener{
 	TextView 		tv;
 	private activityCallback mService;
 	boolean mBind 	= false;
-<<<<<<< HEAD
 
-=======
-	
->>>>>>> 19df174eb4a43cf5c363a4c23ac0c4624f0d0f8f
+
 	TextView infoDay;
 	TextView infoSteps;
 	TextView infoDistance;
@@ -74,12 +71,9 @@ public class MainActivity extends Activity implements OnClickListener{
 		// enable ActionBar app icon to behave as action to toggle nav drawer
         getActionBar().setDisplayHomeAsUpEnabled(true);
         getActionBar().setHomeButtonEnabled(true);
-<<<<<<< HEAD
         setFintViewID();
         settingButton.setOnClickListener(this);
-=======
-
->>>>>>> 24d570b1d531140bf5edc7e7924a0c461d960044
+        
 		mDrawerToggle = new ActionBarDrawerToggle(
 				this,
 				mDrawerLayout,
@@ -89,29 +83,22 @@ public class MainActivity extends Activity implements OnClickListener{
                 	  
                 /** Called when a drawer has settled in a completely closed state. */  
                 public void onDrawerClosed(View view) {  
-                        setTitle(mTitle);  
-                    }  
+                    setTitle(mTitle);  
+                }
           
                     /** Called when a drawer has settled in a completely open state. */  
-                     public void onDrawerOpened(View drawerView) {  
-                        setTitle(mTitle);  
-                    } 
+                public void onDrawerOpened(View drawerView) {  
+                    setTitle(mTitle);  
+                } 
 			};
         // Set the drawer toggle as the DrawerListener
         mDrawerLayout.setDrawerListener(mDrawerToggle);
-<<<<<<< HEAD
-        
-=======
         /*
         View view = this.getLayoutInflater().inflate(R.layout.info_window_activity, null);
         addContentView(view, new　LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT,ViewGroup.LayoutParams.FILL_PARENT))
         */
->>>>>>> 19df174eb4a43cf5c363a4c23ac0c4624f0d0f8f
         WCSample();		
 	}
-
-
-
 
 	private void getDisplaySize(){
 		WindowManager wm = (WindowManager)getSystemService(WINDOW_SERVICE);
@@ -153,28 +140,24 @@ public class MainActivity extends Activity implements OnClickListener{
 		ImageView mapImageView = (ImageView)findViewById(R.id.imageMap);
 		mapImageView.setImageBitmap(mapImage);
 	}
-	private RemoteCallbackList<walkCallback> walkCallBack = new RemoteCallbackList<walkCallback>();	
-
-<<<<<<< HEAD
-=======
+	
 	void WCSample(){
 		startService();
 //		stopService();
 	}
-	
->>>>>>> 19df174eb4a43cf5c363a4c23ac0c4624f0d0f8f
-	@Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        // If the nav drawer is open, hide action items related to the content view
-        boolean drawerOpen = false;
-        return super.onPrepareOptionsMenu(menu);
-    }
 
 	@Override
 	public void setTitle(CharSequence title) {
 	    mTitle = title;
 	    getActionBar().setTitle(mTitle);
 	}
+	
+	@Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        // If the nav drawer is open, hide action items related to the content view
+        boolean drawerOpen = false;
+        return super.onPrepareOptionsMenu(menu);
+    }
 
 	@Override
     protected void onPostCreate(Bundle savedInstanceState) {
@@ -186,32 +169,21 @@ public class MainActivity extends Activity implements OnClickListener{
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        mDrawerToggle.onConfigurationChanged(newConfig);
-        Log.i("main activity169","onConfigurationChanged(Configuration newConfig)");
+        mDrawerToggle.onConfigurationChanged(newConfig);        
     }
     @Override  
     public boolean onOptionsItemSelected(MenuItem item) {  
         // Pass the event to ActionBarDrawerToggle, if it returns  
-        // true, then it has handled the app icon touch event  
+        // true, then it has handled the app icon touch event
         if (mDrawerToggle.onOptionsItemSelected(item)) {
-          return true;  
+          return true;
         }
         // Handle your other action bar items...  
         return super.onOptionsItemSelected(item);  
     }
     
-	private walkCallback wCallback = new walkCallback.Stub() { //【1】
-		@Override
-		public void updateWalkCount(int walkNum) throws RemoteException {
-			// TODO Auto-generated method stub
-			Log.i("test", "call!!");
-		//	tv.setText(""+walkNum);
-		}
-    };    
-    
     //ServiceConnectionを拡張したclassを実装する
     private ServiceConnection mConnection = new ServiceConnection(){
-    	
     	//ServiceConnection#onServiceConntected()の引数で渡される
     	//IBinder objectを利用しAIDLで定義したInterfaceを取得
 		public void onServiceConnected(ComponentName name, IBinder service) {
@@ -230,14 +202,6 @@ public class MainActivity extends Activity implements OnClickListener{
 	};
 
 	private RemoteCallbackList<walkCallback> walkCallBack = new RemoteCallbackList<walkCallback>();	
-
-	void WCSample(){
-//		tv  = new TextView(this);
-//		tv.setText("0");
-//	    setContentView(tv);
-		startService();
-//		stopService();		
-	}
 	
     private walkCallback wCallback = new walkCallback.Stub() { //Åy1Åz
 		@Override
@@ -246,27 +210,6 @@ public class MainActivity extends Activity implements OnClickListener{
 			Log.i("test", "call!!");
 		}
     }; 
-    
-    //ServiceConnectionÇägí£ÇµÇΩclassÇé¿ëïÇ∑ÇÈ
-    private ServiceConnection mConnection = new ServiceConnection(){
-    	
-    	//ServiceConnection#onServiceConntected()ÇÃà¯êîÇ≈ìnÇ≥ÇÍÇÈ
-    	//IBinder objectÇóòópÇµAIDLÇ≈íËã`ÇµÇΩInterfaceÇéÊìæ
-		public void onServiceConnected(ComponentName name, IBinder service) {
-			mService = activityCallback.Stub.asInterface(service);
-			try{
-				//éÊìæÇµÇΩinterfaceÇóòópÇµServiceópÇÃAIDL fileÇ≈íËã`Ç≥ÇÍÇΩmethodÇ≈Observerìoò^/âèú
-				mService.setObserver(wCallback);
-			}catch(RemoteException e){
-			}
-		}
-		
-        //ServiceÇìÆÇ©ÇµÇƒÇÈProcessÇ™crashÇ∑ÇÈÇ©killÇ≥ÇÍÇ»Ç¢å¿ÇËåƒÇŒÇÍÇ»Ç¢
-		@Override
-		public void onServiceDisconnected(ComponentName name) {
-			mService = null;
-		}
-	};
 	
 	void startService(){
 		bindService(new Intent( MainActivity.this, WalkService.class ), mConnection, BIND_AUTO_CREATE);		
@@ -275,19 +218,11 @@ public class MainActivity extends Activity implements OnClickListener{
 	}
 	void stopService(){
 		if(mBind){
-<<<<<<< HEAD
 			//Context#UnbindService()でServiceとのConnectionを破棄
 			unbindService(mConnection);
 			stopService( new Intent( MainActivity.this, WalkService.class ) );
 			mBind = false;
 		}		
-=======
-			//Context#UnbindService()Ç≈ServiceÇ∆ÇÃConnectionÇîjä¸
-			unbindService(mConnection);
-			stopService( new Intent( MainActivity.this, WalkService.class ) );
-			mBind = false;
-		}
->>>>>>> 19df174eb4a43cf5c363a4c23ac0c4624f0d0f8f
 	}
 	@Override
 	public void onClick(View v) {
