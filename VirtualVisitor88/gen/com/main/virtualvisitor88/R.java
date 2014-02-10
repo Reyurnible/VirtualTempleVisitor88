@@ -98,6 +98,7 @@ public final class R {
         public static final int t87=0x7f040057;
         public static final int t88=0x7f040058;
         public static final int t9=0x7f040009;
+        public static final int temple_all=0x7f040059;
     }
     public static final class attr {
     }
@@ -117,16 +118,16 @@ public final class R {
         public static final int map=0x7f020002;
         public static final int parts_map=0x7f020003;
         public static final int shikoku=0x7f020004;
-        public static final int temple=0x7f020005;
-        public static final int tera=0x7f020006;
-        public static final int tera2=0x7f020007;
+        public static final int t1=0x7f020005;
+        public static final int temple=0x7f020006;
+        public static final int tera=0x7f020007;
+        public static final int tera2=0x7f020008;
     }
     public static final class id {
-        public static final int LinearLayout1=0x7f090010;
-        public static final int ScrollView=0x7f09000e;
+        public static final int LinearLayout1=0x7f090013;
+        public static final int ScrollView=0x7f09000f;
         public static final int buttonSetting=0x7f090007;
         public static final int content_frame=0x7f090009;
-        public static final int detail=0x7f09000f;
         public static final int drawer_layout=0x7f090008;
         public static final int imageMap=0x7f09000a;
         public static final int imageView1=0x7f09000c;
@@ -137,13 +138,17 @@ public final class R {
         public static final int infoSteps=0x7f090001;
         public static final int infoTemple=0x7f090003;
         public static final int left_drawer=0x7f09000b;
-        public static final int resetbutton=0x7f090014;
+        public static final int resetbutton=0x7f090017;
+        public static final int shrine_detail=0x7f090011;
+        public static final int shrine_image=0x7f09000e;
         public static final int shrine_name=0x7f09000d;
+        public static final int space_left_shrine=0x7f090010;
+        public static final int space_right_shrine=0x7f090012;
         public static final int templeImage=0x7f090004;
-        public static final int textView1=0x7f090011;
-        public static final int textView2=0x7f090012;
-        public static final int textView3=0x7f090013;
-        public static final int value_id=0x7f090015;
+        public static final int textView1=0x7f090014;
+        public static final int textView2=0x7f090015;
+        public static final int textView3=0x7f090016;
+        public static final int value_id=0x7f090018;
     }
     public static final class layout {
         public static final int activity_drawer=0x7f030000;
