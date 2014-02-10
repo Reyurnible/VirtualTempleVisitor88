@@ -46,11 +46,7 @@ public class MainActivity extends Activity implements OnClickListener{
 	TextView 		tv;
 	private activityCallback mService;
 	boolean mBind 	= false;
-<<<<<<< HEAD
 
-=======
-	
->>>>>>> 19df174eb4a43cf5c363a4c23ac0c4624f0d0f8f
 	TextView infoDay;
 	TextView infoSteps;
 	TextView infoDistance;
@@ -74,12 +70,9 @@ public class MainActivity extends Activity implements OnClickListener{
 		// enable ActionBar app icon to behave as action to toggle nav drawer
         getActionBar().setDisplayHomeAsUpEnabled(true);
         getActionBar().setHomeButtonEnabled(true);
-<<<<<<< HEAD
         setFintViewID();
         settingButton.setOnClickListener(this);
-=======
 
->>>>>>> 24d570b1d531140bf5edc7e7924a0c461d960044
 		mDrawerToggle = new ActionBarDrawerToggle(
 				this,
 				mDrawerLayout,
@@ -99,14 +92,7 @@ public class MainActivity extends Activity implements OnClickListener{
 			};
         // Set the drawer toggle as the DrawerListener
         mDrawerLayout.setDrawerListener(mDrawerToggle);
-<<<<<<< HEAD
-        
-=======
-        /*
-        View view = this.getLayoutInflater().inflate(R.layout.info_window_activity, null);
-        addContentView(view, new　LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT,ViewGroup.LayoutParams.FILL_PARENT))
-        */
->>>>>>> 19df174eb4a43cf5c363a4c23ac0c4624f0d0f8f
+
         WCSample();		
 	}
 
@@ -153,16 +139,7 @@ public class MainActivity extends Activity implements OnClickListener{
 		ImageView mapImageView = (ImageView)findViewById(R.id.imageMap);
 		mapImageView.setImageBitmap(mapImage);
 	}
-	private RemoteCallbackList<walkCallback> walkCallBack = new RemoteCallbackList<walkCallback>();	
-
-<<<<<<< HEAD
-=======
-	void WCSample(){
-		startService();
-//		stopService();
-	}
 	
->>>>>>> 19df174eb4a43cf5c363a4c23ac0c4624f0d0f8f
 	@Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         // If the nav drawer is open, hide action items related to the content view
@@ -200,41 +177,11 @@ public class MainActivity extends Activity implements OnClickListener{
         return super.onOptionsItemSelected(item);  
     }
     
-	private walkCallback wCallback = new walkCallback.Stub() { //【1】
-		@Override
-		public void updateWalkCount(int walkNum) throws RemoteException {
-			// TODO Auto-generated method stub
-			Log.i("test", "call!!");
-		//	tv.setText(""+walkNum);
-		}
-    };    
-    
-    //ServiceConnectionを拡張したclassを実装する
-    private ServiceConnection mConnection = new ServiceConnection(){
-    	
-    	//ServiceConnection#onServiceConntected()の引数で渡される
-    	//IBinder objectを利用しAIDLで定義したInterfaceを取得
-		public void onServiceConnected(ComponentName name, IBinder service) {
-			mService = activityCallback.Stub.asInterface(service);
-			try{
-				//取得したinterfaceを利用しService用のAIDL fileで定義されたmethodでObserver登録/解除
-				mService.setObserver(wCallback);
-			}catch(RemoteException e){
-			}
-		}
 
-        //Serviceを動かしてるProcessがcrashするかkillされない限り呼ばれない
-		public void onServiceDisconnected(ComponentName name) {
-			mService = null;
-		}
-	};
 
 	private RemoteCallbackList<walkCallback> walkCallBack = new RemoteCallbackList<walkCallback>();	
 
 	void WCSample(){
-//		tv  = new TextView(this);
-//		tv.setText("0");
-//	    setContentView(tv);
 		startService();
 //		stopService();		
 	}
@@ -243,7 +190,7 @@ public class MainActivity extends Activity implements OnClickListener{
 		@Override
 		public void updateWalkCount(int walkNum) throws RemoteException {
 			// TODO Auto-generated method stub
-			Log.i("test", "call!!");
+			Log.i("walkCallback", "call!!");
 		}
     }; 
     
@@ -275,19 +222,11 @@ public class MainActivity extends Activity implements OnClickListener{
 	}
 	void stopService(){
 		if(mBind){
-<<<<<<< HEAD
 			//Context#UnbindService()でServiceとのConnectionを破棄
 			unbindService(mConnection);
 			stopService( new Intent( MainActivity.this, WalkService.class ) );
 			mBind = false;
 		}		
-=======
-			//Context#UnbindService()Ç≈ServiceÇ∆ÇÃConnectionÇîjä¸
-			unbindService(mConnection);
-			stopService( new Intent( MainActivity.this, WalkService.class ) );
-			mBind = false;
-		}
->>>>>>> 19df174eb4a43cf5c363a4c23ac0c4624f0d0f8f
 	}
 	@Override
 	public void onClick(View v) {

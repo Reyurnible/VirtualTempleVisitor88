@@ -61,11 +61,7 @@ public class WalkService extends Service{
 	public void onDestroy() {
 		Log.i("WalkService", "onDestroy");
 		wc.stop();
-<<<<<<< HEAD
 		Toast.makeText(this, "MyService onDestroy", Toast.LENGTH_SHORT).show();
-=======
-		Toast.makeText(this, "MyServiceÅ@onDestroy", Toast.LENGTH_SHORT).show();
->>>>>>> 19df174eb4a43cf5c363a4c23ac0c4624f0d0f8f
 	}
 
 }
