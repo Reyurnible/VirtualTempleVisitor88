@@ -44,7 +44,11 @@ public class MainActivity extends Activity{
 	TextView 		tv;
 	private activityCallback mService;
 	boolean mBind 	= false;
+<<<<<<< HEAD
 
+=======
+	
+>>>>>>> 19df174eb4a43cf5c363a4c23ac0c4624f0d0f8f
 	TextView infoDay;
 	TextView infoSteps;
 	TextView infoDistance;
@@ -86,7 +90,14 @@ public class MainActivity extends Activity{
 			};
         // Set the drawer toggle as the DrawerListener
         mDrawerLayout.setDrawerListener(mDrawerToggle);
+<<<<<<< HEAD
         
+=======
+        /*
+        View view = this.getLayoutInflater().inflate(R.layout.info_window_activity, null);
+        addContentView(view, new　LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT,ViewGroup.LayoutParams.FILL_PARENT))
+        */
+>>>>>>> 19df174eb4a43cf5c363a4c23ac0c4624f0d0f8f
         WCSample();		
 	}
 
@@ -132,7 +143,16 @@ public class MainActivity extends Activity{
 		ImageView mapImageView = (ImageView)findViewById(R.id.imageMap);
 		mapImageView.setImageBitmap(mapImage);
 	}
+	private RemoteCallbackList<walkCallback> walkCallBack = new RemoteCallbackList<walkCallback>();	
 
+<<<<<<< HEAD
+=======
+	void WCSample(){
+		startService();
+//		stopService();
+	}
+	
+>>>>>>> 19df174eb4a43cf5c363a4c23ac0c4624f0d0f8f
 	@Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         // If the nav drawer is open, hide action items related to the content view
@@ -162,11 +182,10 @@ public class MainActivity extends Activity{
     public boolean onOptionsItemSelected(MenuItem item) {  
         // Pass the event to ActionBarDrawerToggle, if it returns  
         // true, then it has handled the app icon touch event  
-        if (mDrawerToggle.onOptionsItemSelected(item)) {  
+        if (mDrawerToggle.onOptionsItemSelected(item)) {
           return true;  
-        }  
+        }
         // Handle your other action bar items...  
-  
         return super.onOptionsItemSelected(item);  
     }
     
@@ -209,6 +228,35 @@ public class MainActivity extends Activity{
 //		stopService();		
 	}
 	
+    private walkCallback wCallback = new walkCallback.Stub() { //Åy1Åz
+		@Override
+		public void updateWalkCount(int walkNum) throws RemoteException {
+			// TODO Auto-generated method stub
+			Log.i("test", "call!!");
+		}
+    }; 
+    
+    //ServiceConnectionÇägí£ÇµÇΩclassÇé¿ëïÇ∑ÇÈ
+    private ServiceConnection mConnection = new ServiceConnection(){
+    	
+    	//ServiceConnection#onServiceConntected()ÇÃà¯êîÇ≈ìnÇ≥ÇÍÇÈ
+    	//IBinder objectÇóòópÇµAIDLÇ≈íËã`ÇµÇΩInterfaceÇéÊìæ
+		public void onServiceConnected(ComponentName name, IBinder service) {
+			mService = activityCallback.Stub.asInterface(service);
+			try{
+				//éÊìæÇµÇΩinterfaceÇóòópÇµServiceópÇÃAIDL fileÇ≈íËã`Ç≥ÇÍÇΩmethodÇ≈Observerìoò^/âèú
+				mService.setObserver(wCallback);
+			}catch(RemoteException e){
+			}
+		}
+		
+        //ServiceÇìÆÇ©ÇµÇƒÇÈProcessÇ™crashÇ∑ÇÈÇ©killÇ≥ÇÍÇ»Ç¢å¿ÇËåƒÇŒÇÍÇ»Ç¢
+		@Override
+		public void onServiceDisconnected(ComponentName name) {
+			mService = null;
+		}
+	};
+	
 	void startService(){
 		bindService(new Intent( MainActivity.this, WalkService.class ), mConnection, BIND_AUTO_CREATE);		
 		startService( new Intent( MainActivity.this, WalkService.class ));	
@@ -216,10 +264,18 @@ public class MainActivity extends Activity{
 	}
 	void stopService(){
 		if(mBind){
+<<<<<<< HEAD
 			//Context#UnbindService()でServiceとのConnectionを破棄
 			unbindService(mConnection);
 			stopService( new Intent( MainActivity.this, WalkService.class ) );
 			mBind = false;
 		}		
+=======
+			//Context#UnbindService()Ç≈ServiceÇ∆ÇÃConnectionÇîjä¸
+			unbindService(mConnection);
+			stopService( new Intent( MainActivity.this, WalkService.class ) );
+			mBind = false;
+		}
+>>>>>>> 19df174eb4a43cf5c363a4c23ac0c4624f0d0f8f
 	}
 }
