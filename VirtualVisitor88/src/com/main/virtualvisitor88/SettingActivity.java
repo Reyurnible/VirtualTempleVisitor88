@@ -6,10 +6,12 @@ import android.preference.PreferenceActivity;
 import android.widget.Button;
 
 public class SettingActivity extends PreferenceActivity{
-    @Override
+
+	
+	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        addPreferencesFromResource(R.layout.activity_setting);
+        addPreferencesFromResource(R.xml.activity_setting);
 
     }
 }
