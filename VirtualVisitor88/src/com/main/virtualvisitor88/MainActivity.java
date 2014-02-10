@@ -263,7 +263,7 @@ public class MainActivity extends Activity implements OnClickListener{
 
 	void WCSample(){
 		startService();
-//		stopService();		
+//		stopService();
 	}
 	
     private walkCallback wCallback = new walkCallback.Stub() { //Åy1Åz
@@ -277,8 +277,10 @@ public class MainActivity extends Activity implements OnClickListener{
     }; 
 	
 	void startService(){
-		bindService(new Intent( MainActivity.this, WalkService.class ), mConnection, BIND_AUTO_CREATE);		
-		startService( new Intent( MainActivity.this, WalkService.class ));	
+		if(mBind == false || this.walkCount > 0){
+			bindService(new Intent( MainActivity.this, WalkService.class ), mConnection, BIND_AUTO_CREATE);		
+			startService( new Intent( MainActivity.this, WalkService.class ));	
+		}
 		mBind = true;
 	}
 	void stopService(){
