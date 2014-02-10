@@ -21,16 +21,18 @@ import android.hardware.SensorManager;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.Menu;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.view.Display;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.WindowManager;
 
 @SuppressLint("NewApi")
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-public class MainActivity extends Activity{
+public class MainActivity extends Activity implements OnClickListener{
 	//画面の大きさ
 	private static int dispWidth,dispHeight;
 	
@@ -50,6 +52,8 @@ public class MainActivity extends Activity{
 	ImageView templeImage;
 	TextView infoNextTemple;
 	TextView infoNextTempleDistance;
+	
+	Button settingButton;
 
 	final Double ScaleMtoP = 1.2;
 	Double stepWidth=0.7;
@@ -64,7 +68,8 @@ public class MainActivity extends Activity{
 		// enable ActionBar app icon to behave as action to toggle nav drawer
         getActionBar().setDisplayHomeAsUpEnabled(true);
         getActionBar().setHomeButtonEnabled(true);
-        
+        setFintViewID();
+        settingButton.setOnClickListener(this);
 		mDrawerToggle = new ActionBarDrawerToggle(
 				this,
 				mDrawerLayout,
@@ -115,6 +120,7 @@ public class MainActivity extends Activity{
 		templeImage = (ImageView)findViewById(R.id.templeImage);
 		infoNextTemple = (TextView)findViewById(R.id.infoNextTemple);
 		infoNextTempleDistance = (TextView)findViewById(R.id.infoNextTempleDistance);
+		settingButton = (Button)findViewById(R.id.buttonSetting);
 	}
 	
 	void setTemples(Temple temple){
@@ -161,6 +167,7 @@ public class MainActivity extends Activity{
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         mDrawerToggle.onConfigurationChanged(newConfig);
+        Log.i("main activity169","onConfigurationChanged(Configuration newConfig)");
     }
     @Override  
     public boolean onOptionsItemSelected(MenuItem item) {  
@@ -213,6 +220,17 @@ public class MainActivity extends Activity{
 			unbindService(mConnection);
 			stopService( new Intent( MainActivity.this, WalkService.class ) );
 			mBind = false;
+		}
+	}
+	@Override
+	public void onClick(View v) {
+		switch(v.getId()){
+			case R.id.buttonSetting:
+				Intent intent = new Intent(this,SettingActivity.class);
+				startActivity(intent);
+				break;
+			default:
+				break;
 		}
 	}
 }
