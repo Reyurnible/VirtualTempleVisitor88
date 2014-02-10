@@ -1,62 +1,58 @@
 package com.main.virtualvisitor88;
 
-import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Handler;
+import android.os.RemoteCallbackList;
+import android.os.RemoteException;
 import android.util.Log;
-import android.widget.TextView;
 
 public class WalkCount  implements SensorEventListener, Runnable{
  
- 
-private SensorManager	mSensorManager; 	// ƒZƒ“ƒT[ƒ}ƒl[ƒWƒƒ[
-private Sensor 			mAccelerometer;  			// ‰Á‘¬“xƒZƒ“ƒT[
-private Handler 		mHander = new Handler(); // ’èŠú“I‚É•\¦‚ğØ‚è‘Ö‚¦‚é
-private int 			flg 	= 0;
-private int				walkNum = 0;
-// ‰Á‘¬“xƒZƒ“ƒT[‚Ì’l
-private float mAcceX;
-private float mAcceY;
-private float mAcceZ;
-
-String KEY = "walkValue";
-SharedPreferences pref;  
-SharedPreferences.Editor editor;
-
-WalkCount(SensorManager sm){
-	Log.i("test","test");
-
-	 this.mSensorManager = sm;  
-	 this.mAccelerometer = this.mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+	private SensorManager	mSensorManager; 	// Ã‰ZÃ‰Ã¬Ã‰TÃ…[Ã‰}Ã‰lÃ…[Ã‰WÃ‰Ã‰Ã…[
+	private Sensor 			mAccelerometer;  			// Ã¢Â¡Ã«Â¨Ã¬xÃ‰ZÃ‰Ã¬Ã‰TÃ…[
+	private Handler 		mHander = new Handler(); // Ã­Ã‹Ã¤Ë™Ã¬IÃ‡â€¦Ã¯\Ã©Â¶Ã‡ï£¿ÃªÃ¿Ã‡Ã‹Ã«Ã·Ã‡Â¶Ã‡Ãˆ
+	private int 			flg 	= 0;
+	private int				walkNum = 0;
+	// Ã¢Â¡Ã«Â¨Ã¬xÃ‰ZÃ‰Ã¬Ã‰TÃ…[Ã‡ÃƒÃ­l
+	private float mAcceX;
+	private float mAcceY;
+	private float mAcceZ;
+	RemoteCallbackList<walkCallback> walkCallBack;
+	
+	WalkCount(SensorManager sm,RemoteCallbackList<walkCallback> walkCallBack){
+		Log.i("test","test");
+		this.walkCallBack 	= walkCallBack;
+	 	this.mSensorManager = sm;  
+	 	this.mAccelerometer = this.mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 	 
-	// ƒZƒ“ƒT[ƒŠƒXƒi[‚ğ“o˜^‚·‚é
-	this.mSensorManager.registerListener(
-	  this, this.mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
-	// •\¦‚ğØ‚è‘Ö‚¦‚é‚½‚ß‚Ìƒnƒ“ƒhƒ‰[
-	this.mHander.postDelayed(this, 50);
+	 	// Ã‰ZÃ‰Ã¬Ã‰TÃ…[Ã‰Ã¤Ã‰XÃ‰iÃ…[Ã‡ï£¿Ã¬oÃ²^Ã‡âˆ‘Ã‡Ãˆ
+	 	this.mSensorManager.registerListener(
+		this, this.mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+		// Ã¯\Ã©Â¶Ã‡ï£¿ÃªÃ¿Ã‡Ã‹Ã«Ã·Ã‡Â¶Ã‡ÃˆÃ‡Î©Ã‡ï¬‚Ã‡ÃƒÃ‰nÃ‰Ã¬Ã‰hÃ‰Ã¢
+		this.mHander.postDelayed(this, 50);
 	}
 
 	void stop() {  
-	 // ƒŠƒXƒi[‚ğŠO‚·
+	 // Ã‰Ã¤Ã‰XÃ‰iÃ…[Ã‡ï£¿Ã¤OÃ‡âˆ‘
 	 this.mSensorManager.unregisterListener(this);
-	 // •\¦‚ğØ‚è‘Ö‚¦‚é‚½‚ß‚Ìƒnƒ“ƒhƒ‰[
+	 // Ã¯\Ã©Â¶Ã‡ï£¿ÃªÃ¿Ã‡Ã‹Ã«Ã·Ã‡Â¶Ã‡ÃˆÃ‡Î©Ã‡ï¬‚Ã‡ÃƒÃ‰nÃ‰Ã¬Ã‰hÃ‰Ã¢Ã…[
 	 this.mHander.removeCallbacks(this);  
 	}
 	 
 	public void onAccuracyChanged(Sensor sensor, int accuracy) {
-	 // TODO ©“®¶¬‚³‚ê‚½ƒƒ\ƒbƒhEƒXƒ^ƒu
+	 // TODO Ã©Â©Ã¬Ã†Ãªâˆ‚ÃªÂ¨Ã‡â‰¥Ã‡ÃÃ‡Î©Ã‰Ã…Ã‰\Ã‰bÃ‰hÃ…EÃ‰XÃ‰^Ã‰u
 	  
 	}
 	
 	public void onSensorChanged(SensorEvent event) {
 	  
-	 // ‰Á‘¬“xƒZƒ“ƒT‚¾‚Á‚½
+	 // Ã¢Â¡Ã«Â¨Ã¬xÃ‰ZÃ‰Ã¬Ã‰TÃ‡Ã¦Ã‡Â¡Ã‡Î©Ã©Ã»
 	 if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
 	
-	  // Še²•ûŒü‚Ì’l‚ğæ‚èo‚·
+	  // Ã¤eÃ©â‰¤Ã¯ËšÃ¥Â¸Ã‡ÃƒÃ­lÃ‡ï£¿Ã©ÃŠÃ‡Ã‹Ã¨oÃ‡âˆ‘
 	  this.mAcceX = event.values[0] * event.values[0];
 	  this.mAcceY = event.values[1] * event.values[1];
 	  this.mAcceZ = event.values[2] * event.values[2];
@@ -65,28 +61,30 @@ WalkCount(SensorManager sm){
 	  	if(value < 9.0){
 	  		flg = 1;
 	  		walkNum++;
+	  	  Log.i("test",walkNum + " : " + flg + " : " + value);
+			int observerNum = walkCallBack.beginBroadcast();
+			Log.i("WalkService", "beginBroadcast" + observerNum);
+			for(int i = 0; i < observerNum; i++){
+				Log.i("WalkService", "Count:"+i);
+				try {
+					//RemoteCallbackList#getBroadcastItem()Ã‡â‰ˆCallback interfaceÃ‡ï£¿Ã©ÃŠÃ‡Ã‹Ã¨oÃ‡Âµ
+					//Callback methodÃ‡ï£¿Ã¥Æ’Ã‡â€”Ã¨oÃ‡âˆ‘
+					walkCallBack.getBroadcastItem(i).updateWalkCount(walkNum);
+				} catch (RemoteException e) {
+				}
+			}	
+			walkCallBack.finishBroadcast();	  		
 	  	}
 	  }else{
-	  	if(value > 10.0){
+	  	if(value > 12.0){
 	  		flg = 0;
 	  	}  	
 	  }
-	  Log.i("test",walkNum + " : " + flg + " : " + value);
 	 }
 	}
 
 	public void run() {
-	 // EditText‚É•\¦‚·‚é
+	 // EditTextÃ‡â€¦Ã¯\Ã©Â¶Ã‡âˆ‘Ã‡Ãˆ
 	 this.mHander.postDelayed(this, 50);
 	}
-
-	public void save(String value){
-		editor = pref.edit();  
-		// Editor ‚É’l‚ğ‘ã“ü  
-		editor.putString(  
-			KEY,value
-		);  
-		// ƒf[ƒ^‚Ì•Û‘¶  
-		editor.commit();    
-	}  
 }

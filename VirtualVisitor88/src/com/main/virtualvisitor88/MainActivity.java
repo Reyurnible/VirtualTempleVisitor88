@@ -4,17 +4,22 @@ import com.main.virtualvisitor88.Temples.Temple;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.os.IBinder;
+import android.os.RemoteCallbackList;
+import android.os.RemoteException;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.res.Configuration;
 import android.support.v4.app.ActionBarDrawerToggle;
+import android.content.ComponentName;
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.content.ServiceConnection;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.hardware.SensorManager;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.Menu;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -35,9 +40,9 @@ public class MainActivity extends Activity{
 	SensorManager	sm;
 	WalkCount		wc;
 	TextView 		tv;
-	String KEY = "walkValue";
-	SharedPreferences pref;  
-
+	private activityCallback mService;
+	boolean mBind 	= false;
+	
 	TextView infoDay;
 	TextView infoSteps;
 	TextView infoDistance;
@@ -83,7 +88,7 @@ public class MainActivity extends Activity{
         View view = this.getLayoutInflater().inflate(R.layout.info_window_activity, null);
         addContentView(view, new　LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT,ViewGroup.LayoutParams.FILL_PARENT))
         */
-        //WCSample();		
+        WCSample();		
 	}
 	
 	private void getDisplaySize(){
@@ -125,15 +130,13 @@ public class MainActivity extends Activity{
 		ImageView mapImageView = (ImageView)findViewById(R.id.imageMap);
 		mapImageView.setImageBitmap(mapImage);
 	}
+	private RemoteCallbackList<walkCallback> walkCallBack = new RemoteCallbackList<walkCallback>();	
 
 	void WCSample(){
-		pref = getSharedPreferences(KEY, Activity.MODE_PRIVATE);  
-		tv  = new TextView(this);
-	//	tv.setText(pref.getString(PREF_KEY, "No Data"));
-	    setContentView(tv);
 		startService();
-	//	stopService();		
+//		stopService();
 	}
+	
 	@Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         // If the nav drawer is open, hide action items related to the content view
@@ -163,18 +166,53 @@ public class MainActivity extends Activity{
     public boolean onOptionsItemSelected(MenuItem item) {  
         // Pass the event to ActionBarDrawerToggle, if it returns  
         // true, then it has handled the app icon touch event  
-        if (mDrawerToggle.onOptionsItemSelected(item)) {  
+        if (mDrawerToggle.onOptionsItemSelected(item)) {
           return true;  
-        }  
+        }
         // Handle your other action bar items...  
-  
         return super.onOptionsItemSelected(item);  
     }
 	
+    private walkCallback wCallback = new walkCallback.Stub() { //Åy1Åz
+		@Override
+		public void updateWalkCount(int walkNum) throws RemoteException {
+			// TODO Auto-generated method stub
+			Log.i("test", "call!!");
+		}
+    }; 
+    
+    //ServiceConnectionÇägí£ÇµÇΩclassÇé¿ëïÇ∑ÇÈ
+    private ServiceConnection mConnection = new ServiceConnection(){
+    	
+    	//ServiceConnection#onServiceConntected()ÇÃà¯êîÇ≈ìnÇ≥ÇÍÇÈ
+    	//IBinder objectÇóòópÇµAIDLÇ≈íËã`ÇµÇΩInterfaceÇéÊìæ
+		public void onServiceConnected(ComponentName name, IBinder service) {
+			mService = activityCallback.Stub.asInterface(service);
+			try{
+				//éÊìæÇµÇΩinterfaceÇóòópÇµServiceópÇÃAIDL fileÇ≈íËã`Ç≥ÇÍÇΩmethodÇ≈Observerìoò^/âèú
+				mService.setObserver(wCallback);
+			}catch(RemoteException e){
+			}
+		}
+		
+        //ServiceÇìÆÇ©ÇµÇƒÇÈProcessÇ™crashÇ∑ÇÈÇ©killÇ≥ÇÍÇ»Ç¢å¿ÇËåƒÇŒÇÍÇ»Ç¢
+		@Override
+		public void onServiceDisconnected(ComponentName name) {
+			mService = null;
+		}
+	};
+	
 	void startService(){
-		startService( new Intent( MainActivity.this, WalkService.class ) );		
+		bindService(new Intent( MainActivity.this, WalkService.class ), mConnection, BIND_AUTO_CREATE);		
+		startService( new Intent( MainActivity.this, WalkService.class ));	
+		mBind = true;
 	}
 	void stopService(){
-		stopService( new Intent( MainActivity.this, WalkService.class ) );
+		if(mBind){
+			//Context#UnbindService()Ç≈ServiceÇ∆ÇÃConnectionÇîjä¸
+			unbindService(mConnection);
+			stopService( new Intent( MainActivity.this, WalkService.class ) );
+			mBind = false;
+		}
 	}
 }

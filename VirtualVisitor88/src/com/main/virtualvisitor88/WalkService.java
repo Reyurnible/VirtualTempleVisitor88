@@ -6,15 +6,44 @@ import android.content.Intent;
 import android.hardware.SensorManager;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.RemoteCallbackList;
+import android.os.RemoteException;
 import android.util.Log;
 import android.widget.Toast;
 
-public class WalkService extends Service {
+public class WalkService extends Service{
 	
 	Handler mHandler = new Handler();
 	SensorManager	sm;
 	WalkCount		wc;
 	
+	//RemoteCallbackListÇ∆Ç¢Ç§ClassÇópà”ÇµCallback InterfaceÇï€éùÇ∑ÇÈ
+		private RemoteCallbackList<walkCallback> walkCallBack = new RemoteCallbackList<walkCallback>();
+		
+		//ServiceÇ≈AIDL fileÇ…íËã`ÇµÇΩinterfaceÇÃé¿ëï
+		//ÇΩÇæÇµÅAê∂ê¨Ç≥ÇÍÇΩjava fileÇÃStub classÇé¿ëïÇ∑ÇÈ
+		private final activityCallback.Stub activityCallBack = new activityCallback.Stub() {
+			
+			//Observerìoò^methodì‡Ç≈RemoteCallbackList#register() methodÇ≈à¯êîÇ…ìnÇ≥ÇÍÇΩCallback interfaceÇìoò^Ç∑ÇÈ
+			public void setObserver(walkCallback observer)
+					throws RemoteException {
+				Log.i("test", "setObserver called by " + Thread.currentThread().getName());
+				walkCallBack.register(observer);			
+			}
+			public void removeObserver(walkCallback observer)
+					throws RemoteException {
+				walkCallBack.unregister(observer);
+			}
+		}; 
+
+	//ê∂ê¨ÇµÇΩStub classÇService#onBind()Ç≈returnÇ∑ÇÈ
+	@Override
+	public IBinder onBind(Intent arg0) {
+		Toast.makeText(this, "onBind called by "
+			  + Thread.currentThread().getName(), Toast.LENGTH_LONG).show();
+		return activityCallBack;
+	}
+		
 	@Override
 	public void onCreate() {
 		Log.i("WalkService", "onCreate");
@@ -24,7 +53,7 @@ public class WalkService extends Service {
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		Log.i("WalkService", "onStartCommand");
 		sm = (SensorManager)getSystemService(Context.SENSOR_SERVICE);
-		wc = new WalkCount(sm);
+		wc = new WalkCount(sm,walkCallBack);
 		return START_STICKY;
 	}
 
@@ -32,12 +61,7 @@ public class WalkService extends Service {
 	public void onDestroy() {
 		Log.i("WalkService", "onDestroy");
 		wc.stop();
-		Toast.makeText(this, "MyService�@onDestroy", Toast.LENGTH_SHORT).show();
+		Toast.makeText(this, "MyServiceÅ@onDestroy", Toast.LENGTH_SHORT).show();
 	}
 
-	@Override
-	public IBinder onBind(Intent arg0) {
-		Log.i("WalkService", "onBind");
-		return null;
-	}
 }
