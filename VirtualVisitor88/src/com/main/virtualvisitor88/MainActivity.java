@@ -39,71 +39,89 @@ import android.view.WindowManager;
 public class MainActivity extends Activity implements OnClickListener{
 	//画面の大きさ
 	private static int dispWidth,dispHeight;
-
-	private DrawerLayout mDrawerLayout;
-	private ActionBarDrawerToggle mDrawerToggle;
+	//ピクセルとメートルを変換する係数と一歩の大きさ
+	final Double ScaleMtoP = 1.2;
+	//この値は設定から呼び出す。
+	Double stepWidth=0.7;
+	
+	
 	private CharSequence mTitle;
 	SensorManager	sm;
 	WalkCount		wc;
-	TextView 		tv;
 	private activityCallback mService;
 	boolean mBind 	= false;
 	
+	//現在の動的な情報
 	int walkCount=0;
-
-	TextView infoDay;
-	TextView infoSteps;
-	TextView infoDistance;
-	TextView infoTemple;
-	ImageView templeImage;
-	TextView infoNextTemple;
-	TextView infoNextTempleDistance;
+	Temple nowTemple;
 	
-	Button settingButton;
-
-	final Double ScaleMtoP = 1.2;
-	Double stepWidth=0.7;
+	//各ビューパーツ
+	private DrawerLayout mDrawerLayout;
+	private ActionBarDrawerToggle mDrawerToggle;
+	
+	private TextView infoDay;
+	private TextView infoSteps;
+	private TextView infoDistance;
+	private TextView infoTemple;
+	private ImageView templeImage;
+	private TextView infoNextTemple;
+	private TextView infoNextTempleDistance;
+	
+	private Button settingButton;
+	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		//タイトルの設定
 		mTitle = getTitle();
+		//画面の大きさを取得
 		getDisplaySize();
+		//ドロわーレイアウトの取得
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 		// enable ActionBar app icon to behave as action to toggle nav drawer
         getActionBar().setDisplayHomeAsUpEnabled(true);
         getActionBar().setHomeButtonEnabled(true);
+        //各ビューのIDとヒモ付
         setFintViewID();
+        //ドロワー内の設定呼び出しボタンがクリックされたとき用のリスナーをセット
         settingButton.setOnClickListener(this);
-        
+        //ドロワーの設定
 		mDrawerToggle = new ActionBarDrawerToggle(
 				this,
 				mDrawerLayout,
                 R.drawable.ic_drawer,
                 R.string.drawer_open,
                 R.string.drawer_close){
-                	  
-                /** Called when a drawer has settled in a completely closed state. */  
+                //ドロワーが閉じた時の処理  
                 public void onDrawerClosed(View view) {  
-                    setTitle(mTitle);  
+                    
                 }
-          
-                    /** Called when a drawer has settled in a completely open state. */  
+                //ドロワーが開いた時の処理  
                 public void onDrawerOpened(View drawerView) {
+                	//ドロワー内の歩数などの情報を更新する
                 	setInfo();
-                    setTitle(mTitle);
-                } 
+                }
 			};
         // Set the drawer toggle as the DrawerListener
         mDrawerLayout.setDrawerListener(mDrawerToggle);
-        /*
-        View view = this.getLayoutInflater().inflate(R.layout.info_window_activity, null);
-        addContentView(view, new　LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT,ViewGroup.LayoutParams.FILL_PARENT))
-        */
+        
         WCSample();		
 	}
-
+	
+	@Override
+	protected void onResume(){
+		super.onResume();
+		//マップの表示を行う 現在のお寺と歩数で場所を特定できる。
+		setMapImage(nowTemple,walkCount);
+	}
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		//SPにデータを保存する
+	}
+	//ディスプレイの大きさを取得
 	private void getDisplaySize(){
 		WindowManager wm = (WindowManager)getSystemService(WINDOW_SERVICE);
 		Display disp = wm.getDefaultDisplay();
@@ -119,7 +137,7 @@ public class MainActivity extends Activity implements OnClickListener{
 			dispHeight=disp.getHeight();
 		}
 	}
-
+	//IDとのヒモ付を一括して行う
 	void setFintViewID(){
 		infoDay =(TextView)findViewById(R.id.infoDay);
 		infoSteps = (TextView)findViewById(R.id.infoSteps);
@@ -150,7 +168,7 @@ public class MainActivity extends Activity implements OnClickListener{
 		infoNextTemple.setText("次のお寺:"+Temples.getTemple(temple.id+1).name);
 		infoNextTempleDistance.setText("次のお寺まで:"+Temples.getDistance(temple, Temples.getTemple(temple.id+1))+"km");
 	}
-	
+	//メインコンテンツの画像をセットする
 	void setMapImage(Temple temple,int steps){
 		Point center = MapCalculation.getCentetPoint(temple, Temples.getTemple(temple.id+1), steps*stepWidth/ScaleMtoP);
 		Bitmap mapImage = MapCalculation.getMapBitmap(center,dispWidth,dispHeight,this);
