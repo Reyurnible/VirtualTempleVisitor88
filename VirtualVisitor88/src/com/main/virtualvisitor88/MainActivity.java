@@ -1,49 +1,65 @@
 package com.main.virtualvisitor88;
 
+import com.main.virtualvisitor88.Temples.Temple;
+
 import android.os.Build;
 import android.os.Bundle;
-import android.os.IBinder;
-import android.os.RemoteCallbackList;
-import android.os.RemoteException;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.res.Configuration;
 import android.support.v4.app.ActionBarDrawerToggle;
-import android.content.ComponentName;
 import android.content.Intent;
-import android.content.ServiceConnection;
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.Point;
 import android.hardware.SensorManager;
 import android.support.v4.widget.DrawerLayout;
-import android.util.Log;
 import android.view.Menu;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.view.Display;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 
 @SuppressLint("NewApi")
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class MainActivity extends Activity{
-
+	//ÁîªÈù¢„ÅÆÂ§ß„Åç„Åï
+	private static int dispWidth,dispHeight;
+	
 	private DrawerLayout mDrawerLayout;
 	private ActionBarDrawerToggle mDrawerToggle;
 	private CharSequence mTitle;
 	SensorManager	sm;
 	WalkCount		wc;
 	TextView 		tv;
-	private activityCallback mService;
-	boolean mBind 	= false;
+	String KEY = "walkValue";
+	SharedPreferences pref;  
+
+	TextView infoDay;
+	TextView infoSteps;
+	TextView infoDistance;
+	TextView infoTemple;
+	ImageView templeImage;
+	TextView infoNextTemple;
+	TextView infoNextTempleDistance;
+
+	final Double ScaleMtoP = 1.2;
+	Double stepWidth=0.7;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		mTitle = getTitle();
+		getDisplaySize();
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 		// enable ActionBar app icon to behave as action to toggle nav drawer
         getActionBar().setDisplayHomeAsUpEnabled(true);
         getActionBar().setHomeButtonEnabled(true);
-		
+        
 		mDrawerToggle = new ActionBarDrawerToggle(
 				this,
 				mDrawerLayout,
@@ -57,26 +73,67 @@ public class MainActivity extends Activity{
                     }  
           
                     /** Called when a drawer has settled in a completely open state. */  
-                     public void onDrawerOpened(View drawerView) {  
+                    public void onDrawerOpened(View drawerView) {  
                         setTitle(mTitle);  
-                    } 
+                    }
 			};
         // Set the drawer toggle as the DrawerListener
         mDrawerLayout.setDrawerListener(mDrawerToggle);
-        
-        WCSample();		
+        /*
+        View view = this.getLayoutInflater().inflate(R.layout.info_window_activity, null);
+        addContentView(view, new„ÄÄLinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT,ViewGroup.LayoutParams.FILL_PARENT))
+        */
+        //WCSample();		
 	}
-	private RemoteCallbackList<walkCallback> walkCallBack = new RemoteCallbackList<walkCallback>();	
+	
+	private void getDisplaySize(){
+		WindowManager wm = (WindowManager)getSystemService(WINDOW_SERVICE);
+		Display disp = wm.getDefaultDisplay();
+		dispWidth = 500;
+		dispHeight = 1000;
+		if(Build.VERSION.SDK_INT >= 13){
+			Point size = new Point();
+			disp.getSize(size);
+			dispWidth=size.x;
+			dispHeight=size.y;
+		}else{
+			dispWidth=disp.getWidth();
+			dispHeight=disp.getHeight();
+		}
+	}
+	
+	void setFintViewID(){
+		infoDay =(TextView)findViewById(R.id.infoDay);
+		infoSteps = (TextView)findViewById(R.id.infoSteps);
+		infoDistance= (TextView)findViewById(R.id.infoDistance);
+		infoTemple = (TextView)findViewById(R.id.infoTemple);
+		templeImage = (ImageView)findViewById(R.id.templeImage);
+		infoNextTemple = (TextView)findViewById(R.id.infoNextTemple);
+		infoNextTempleDistance = (TextView)findViewById(R.id.infoNextTempleDistance);
+	}
+	
+	void setTemples(Temple temple){
+		infoTemple.setText("ÁèæÂú®„ÅÆ„ÅäÂØ∫:"+temple.name);
+		templeImage.setImageBitmap(Temples.getImage(temple.id,this));
+		infoNextTemple.setText("Ê¨°„ÅÆ„ÅäÂØ∫:"+Temples.getTemple(temple.id+1).name);
+		infoNextTempleDistance.setText("Ê¨°„ÅÆ„ÅäÂØ∫„Åæ„Åß:"+Temples.getDistance(temple, Temples.getTemple(temple.id+1))+"km");
+	}
+	
+	void setMapImage(Temple temple,int steps){
+		Point center = MapCalculation.getCentetPoint(temple, Temples.getTemple(temple.id+1), steps*stepWidth/ScaleMtoP);
+		Bitmap mapImage = MapCalculation.getMapBitmap(center,dispWidth,dispHeight,this);
+		ImageView mapImageView = (ImageView)findViewById(R.id.imageMap);
+		mapImageView.setImageBitmap(mapImage);
+	}
 
 	void WCSample(){
+		pref = getSharedPreferences(KEY, Activity.MODE_PRIVATE);  
 		tv  = new TextView(this);
-		tv.setText("0");
+	//	tv.setText(pref.getString(PREF_KEY, "No Data"));
 	    setContentView(tv);
 		startService();
-//		stopService();		
+	//	stopService();		
 	}
-
-	
 	@Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         // If the nav drawer is open, hide action items related to the content view
@@ -113,47 +170,11 @@ public class MainActivity extends Activity{
   
         return super.onOptionsItemSelected(item);  
     }
-    
-	private walkCallback wCallback = new walkCallback.Stub() { //Åy1Åz
-		@Override
-		public void updateWalkCount(int walkNum) throws RemoteException {
-			// TODO Auto-generated method stub
-			Log.i("test", "call!!");
-			tv.setText(""+walkNum);
-		}
-    };    
-    
-    //ServiceConnectionÇägí£ÇµÇΩclassÇé¿ëïÇ∑ÇÈ
-    private ServiceConnection mConnection = new ServiceConnection(){
-    	
-    	//ServiceConnection#onServiceConntected()ÇÃà¯êîÇ≈ìnÇ≥ÇÍÇÈ
-    	//IBinder objectÇóòópÇµAIDLÇ≈íËã`ÇµÇΩInterfaceÇéÊìæ
-		public void onServiceConnected(ComponentName name, IBinder service) {
-			mService = activityCallback.Stub.asInterface(service);
-			try{
-				//éÊìæÇµÇΩinterfaceÇóòópÇµServiceópÇÃAIDL fileÇ≈íËã`Ç≥ÇÍÇΩmethodÇ≈Observerìoò^/âèú
-				mService.setObserver(wCallback);
-			}catch(RemoteException e){
-			}
-		}
-		
-        //ServiceÇìÆÇ©ÇµÇƒÇÈProcessÇ™crashÇ∑ÇÈÇ©killÇ≥ÇÍÇ»Ç¢å¿ÇËåƒÇŒÇÍÇ»Ç¢
-		public void onServiceDisconnected(ComponentName name) {
-			mService = null;
-		}
-	};
 	
 	void startService(){
-		bindService(new Intent( MainActivity.this, WalkService.class ), mConnection, BIND_AUTO_CREATE);		
-		startService( new Intent( MainActivity.this, WalkService.class ));	
-		mBind = true;
+		startService( new Intent( MainActivity.this, WalkService.class ) );		
 	}
 	void stopService(){
-		if(mBind){
-			//Context#UnbindService()Ç≈ServiceÇ∆ÇÃConnectionÇîjä¸
-			unbindService(mConnection);
-			stopService( new Intent( MainActivity.this, WalkService.class ) );
-			mBind = false;
-		}		
+		stopService( new Intent( MainActivity.this, WalkService.class ) );
 	}
 }
