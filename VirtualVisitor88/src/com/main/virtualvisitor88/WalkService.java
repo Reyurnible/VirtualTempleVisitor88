@@ -32,7 +32,7 @@ public class WalkService extends Service {
 	public void onDestroy() {
 		Log.i("WalkService", "onDestroy");
 		wc.stop();
-		Toast.makeText(this, "MyServiceÅ@onDestroy", Toast.LENGTH_SHORT).show();
+		Toast.makeText(this, "MyService onDestroy", Toast.LENGTH_SHORT).show();
 	}
 
 	@Override

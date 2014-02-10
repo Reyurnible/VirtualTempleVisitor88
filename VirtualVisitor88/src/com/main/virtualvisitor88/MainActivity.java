@@ -4,17 +4,22 @@ import com.main.virtualvisitor88.Temples.Temple;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.os.IBinder;
+import android.os.RemoteCallbackList;
+import android.os.RemoteException;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.res.Configuration;
 import android.support.v4.app.ActionBarDrawerToggle;
+import android.content.ComponentName;
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.content.ServiceConnection;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.hardware.SensorManager;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.Menu;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -23,20 +28,22 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 
+
+
 @SuppressLint("NewApi")
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class MainActivity extends Activity{
 	//画面の大きさ
 	private static int dispWidth,dispHeight;
-	
+
 	private DrawerLayout mDrawerLayout;
 	private ActionBarDrawerToggle mDrawerToggle;
 	private CharSequence mTitle;
 	SensorManager	sm;
 	WalkCount		wc;
 	TextView 		tv;
-	String KEY = "walkValue";
-	SharedPreferences pref;  
+	private activityCallback mService;
+	boolean mBind 	= false;
 
 	TextView infoDay;
 	TextView infoSteps;
@@ -48,7 +55,7 @@ public class MainActivity extends Activity{
 
 	final Double ScaleMtoP = 1.2;
 	Double stepWidth=0.7;
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -59,7 +66,7 @@ public class MainActivity extends Activity{
 		// enable ActionBar app icon to behave as action to toggle nav drawer
         getActionBar().setDisplayHomeAsUpEnabled(true);
         getActionBar().setHomeButtonEnabled(true);
-        
+
 		mDrawerToggle = new ActionBarDrawerToggle(
 				this,
 				mDrawerLayout,
@@ -73,19 +80,19 @@ public class MainActivity extends Activity{
                     }  
           
                     /** Called when a drawer has settled in a completely open state. */  
-                    public void onDrawerOpened(View drawerView) {  
+                     public void onDrawerOpened(View drawerView) {  
                         setTitle(mTitle);  
-                    }
+                    } 
 			};
         // Set the drawer toggle as the DrawerListener
         mDrawerLayout.setDrawerListener(mDrawerToggle);
-        /*
-        View view = this.getLayoutInflater().inflate(R.layout.info_window_activity, null);
-        addContentView(view, new　LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT,ViewGroup.LayoutParams.FILL_PARENT))
-        */
-        //WCSample();		
+        
+        WCSample();		
 	}
-	
+
+
+
+
 	private void getDisplaySize(){
 		WindowManager wm = (WindowManager)getSystemService(WINDOW_SERVICE);
 		Display disp = wm.getDefaultDisplay();
@@ -101,7 +108,7 @@ public class MainActivity extends Activity{
 			dispHeight=disp.getHeight();
 		}
 	}
-	
+
 	void setFintViewID(){
 		infoDay =(TextView)findViewById(R.id.infoDay);
 		infoSteps = (TextView)findViewById(R.id.infoSteps);
@@ -126,27 +133,19 @@ public class MainActivity extends Activity{
 		mapImageView.setImageBitmap(mapImage);
 	}
 
-	void WCSample(){
-		pref = getSharedPreferences(KEY, Activity.MODE_PRIVATE);  
-		tv  = new TextView(this);
-	//	tv.setText(pref.getString(PREF_KEY, "No Data"));
-	    setContentView(tv);
-		startService();
-	//	stopService();		
-	}
 	@Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         // If the nav drawer is open, hide action items related to the content view
         boolean drawerOpen = false;
         return super.onPrepareOptionsMenu(menu);
     }
-	
+
 	@Override
 	public void setTitle(CharSequence title) {
 	    mTitle = title;
 	    getActionBar().setTitle(mTitle);
 	}
-	
+
 	@Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
@@ -170,11 +169,57 @@ public class MainActivity extends Activity{
   
         return super.onOptionsItemSelected(item);  
     }
+    
+	private walkCallback wCallback = new walkCallback.Stub() { //【1】
+		@Override
+		public void updateWalkCount(int walkNum) throws RemoteException {
+			// TODO Auto-generated method stub
+			Log.i("test", "call!!");
+		//	tv.setText(""+walkNum);
+		}
+    };    
+    
+    //ServiceConnectionを拡張したclassを実装する
+    private ServiceConnection mConnection = new ServiceConnection(){
+    	
+    	//ServiceConnection#onServiceConntected()の引数で渡される
+    	//IBinder objectを利用しAIDLで定義したInterfaceを取得
+		public void onServiceConnected(ComponentName name, IBinder service) {
+			mService = activityCallback.Stub.asInterface(service);
+			try{
+				//取得したinterfaceを利用しService用のAIDL fileで定義されたmethodでObserver登録/解除
+				mService.setObserver(wCallback);
+			}catch(RemoteException e){
+			}
+		}
+
+        //Serviceを動かしてるProcessがcrashするかkillされない限り呼ばれない
+		public void onServiceDisconnected(ComponentName name) {
+			mService = null;
+		}
+	};
+
+	private RemoteCallbackList<walkCallback> walkCallBack = new RemoteCallbackList<walkCallback>();	
+
+	void WCSample(){
+//		tv  = new TextView(this);
+//		tv.setText("0");
+//	    setContentView(tv);
+		startService();
+//		stopService();		
+	}
 	
 	void startService(){
-		startService( new Intent( MainActivity.this, WalkService.class ) );		
+		bindService(new Intent( MainActivity.this, WalkService.class ), mConnection, BIND_AUTO_CREATE);		
+		startService( new Intent( MainActivity.this, WalkService.class ));	
+		mBind = true;
 	}
 	void stopService(){
-		stopService( new Intent( MainActivity.this, WalkService.class ) );
+		if(mBind){
+			//Context#UnbindService()でServiceとのConnectionを破棄
+			unbindService(mConnection);
+			stopService( new Intent( MainActivity.this, WalkService.class ) );
+			mBind = false;
+		}		
 	}
 }
