@@ -1,6 +1,6 @@
 /*
  * This file is auto-generated.  DO NOT MODIFY.
- * Original file: /Users/reyurnible/VirtualTempleVisitor88/VirtualVisitor88/src/com/main/virtualvisitor88/walkCallback.aidl
+ * Original file: /Users/oguro/web/VirtualTempleVisitor88/VirtualVisitor88/src/com/main/virtualvisitor88/walkCallback.aidl
  */
 package com.main.virtualvisitor88;
 public interface walkCallback extends android.os.IInterface

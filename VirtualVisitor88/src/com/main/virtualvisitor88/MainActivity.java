@@ -72,8 +72,7 @@ public class MainActivity extends Activity implements OnClickListener{
 	private TextView infoNextTemple;
 	private TextView infoNextTempleDistance;
 	
-	private Button settingButton;
-	
+	private Button settingButton;	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -92,7 +91,6 @@ public class MainActivity extends Activity implements OnClickListener{
         setFintViewID();
         //ドロワー内の設定呼び出しボタンがクリックされたとき用のリスナーをセット
         settingButton.setOnClickListener(this);
-        //ドロワーの設定
 		mDrawerToggle = new ActionBarDrawerToggle(
 				this,
 				mDrawerLayout,
@@ -111,7 +109,6 @@ public class MainActivity extends Activity implements OnClickListener{
 			};
         // Set the drawer toggle as the DrawerListener
         mDrawerLayout.setDrawerListener(mDrawerToggle);
-        
         loadData();
         setInfo();
         setTemple(nowTemple);
@@ -205,13 +202,8 @@ public class MainActivity extends Activity implements OnClickListener{
 			ImageView mapImageView = (ImageView)findViewById(R.id.imageMap);
 			mapImageView.setImageBitmap(mapImage);
 		}
-	}
+	}	
 	
-	void WCSample(){
-		startService();
-//		stopService();
-	}
-
 	@Override
 	public void setTitle(CharSequence title) {
 	    mTitle = title;
@@ -260,14 +252,19 @@ public class MainActivity extends Activity implements OnClickListener{
 			}catch(RemoteException e){
 			}
 		}
-
+		
         //Serviceを動かしてるProcessがcrashするかkillされない限り呼ばれない
 		public void onServiceDisconnected(ComponentName name) {
 			mService = null;
 		}
-	};
+    };
 
 	private RemoteCallbackList<walkCallback> walkCallBack = new RemoteCallbackList<walkCallback>();	
+
+	void WCSample(){
+		startService();
+//		stopService();
+	}
 	
     private walkCallback wCallback = new walkCallback.Stub() { //Åy1Åz
 		@Override
@@ -280,8 +277,10 @@ public class MainActivity extends Activity implements OnClickListener{
     }; 
 	
 	void startService(){
-		bindService(new Intent( MainActivity.this, WalkService.class ), mConnection, BIND_AUTO_CREATE);		
-		startService( new Intent( MainActivity.this, WalkService.class ));	
+		if(mBind == false || this.walkCount > 0){
+			bindService(new Intent( MainActivity.this, WalkService.class ), mConnection, BIND_AUTO_CREATE);		
+			startService( new Intent( MainActivity.this, WalkService.class ));	
+		}
 		mBind = true;
 	}
 	void stopService(){
