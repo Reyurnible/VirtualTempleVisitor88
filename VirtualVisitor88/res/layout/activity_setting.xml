@@ -27,11 +27,6 @@
                 android:dialogTitle="性別を選んでください" />
    </PreferenceCategory>
 　　<PreferenceCategory android:title="歩数初期化">
-　　　　<Preference 
-    android:summary="Reset" 
-    android:title="Reset" 
-    android:key="@+id/reset" 
-    android:layout="@layout/resetbutton">
-　　　　</Preference>
+
 　　</PreferenceCategory>
 </PreferenceScreen>
