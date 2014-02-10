@@ -28,8 +28,8 @@
             android:label="@string/app_name" >
         </activity>
       	<activity
-      	     android:name="com.main.virtualvisitor88.SettingActivity"
-      	     android:label="@string/app_name" >
+      	    android:name="com.main.virtualvisitor88.SettingActivity"
+      	    android:label="@string/app_name" >
 　　　　	</activity>
          <service android:name="WalkService" />
     </application>
