@@ -1,6 +1,6 @@
 /*
  * This file is auto-generated.  DO NOT MODIFY.
- * Original file: /Users/oguro/web/VirtualTempleVisitor88/VirtualVisitor88/src/com/main/virtualvisitor88/activityCallback.aidl
+ * Original file: /Users/reyurnible/VirtualTempleVisitor88/VirtualTempleVisitor88/VirtualVisitor88/src/com/main/virtualvisitor88/activityCallback.aidl
  */
 package com.main.virtualvisitor88;
 public interface activityCallback extends android.os.IInterface

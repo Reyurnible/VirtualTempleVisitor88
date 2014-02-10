@@ -26,6 +26,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.Menu;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.view.Display;
@@ -83,8 +84,6 @@ public class MainActivity extends Activity implements OnClickListener{
 		setContentView(R.layout.activity_main);
 		//タイトルの設定
 		mTitle = getTitle();
-		//画面の大きさを取得
-		getDisplaySize();
 		//ドロわーレイアウトの取得
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 		// enable ActionBar app icon to behave as action to toggle nav drawer
@@ -92,6 +91,7 @@ public class MainActivity extends Activity implements OnClickListener{
         getActionBar().setHomeButtonEnabled(true);
         //各ビューのIDとヒモ付
         setFintViewID();
+        mapImageView.setImageBitmap(null);
         //ドロワー内の設定呼び出しボタンがクリックされたとき用のリスナーをセット
         settingButton.setOnClickListener(this);
 		mDrawerToggle = new ActionBarDrawerToggle(
@@ -122,8 +122,10 @@ public class MainActivity extends Activity implements OnClickListener{
 	@Override
 	protected void onResume(){
 		super.onResume();
-		//マップの表示を行う 現在のお寺と歩数で場所を特定できる。
-		setMapImage(nowTemple,walkCount);
+		if(dispWidth!=0||dispHeight!=0){
+			//マップの表示を行う 現在のお寺と歩数で場所を特定できる。
+			setMapImage(nowTemple,walkCount);
+		}
 	}
 	@Override
 	protected void onDestroy() {
@@ -131,21 +133,20 @@ public class MainActivity extends Activity implements OnClickListener{
 		//SPにデータを保存する
 	}
 	//ディスプレイの大きさを取得
-	private void getDisplaySize(){
-		WindowManager wm = (WindowManager)getSystemService(WINDOW_SERVICE);
-		Display disp = wm.getDefaultDisplay();
+	@Override
+	public void onWindowFocusChanged(boolean paramBoolean) {
+		super.onWindowFocusChanged(paramBoolean);  
 		dispWidth = 500;
 		dispHeight = 1000;
-		if(Build.VERSION.SDK_INT >= 13){
-			Point size = new Point();
-			disp.getSize(size);
-			dispWidth=size.x;
-			dispHeight=size.y;
-		}else{
-			dispWidth=disp.getWidth();
-			dispHeight=disp.getHeight();
+		try{
+			FrameLayout contentFrame = (FrameLayout)findViewById(R.id.content_frame);
+			dispWidth = contentFrame.getWidth();
+			dispHeight = contentFrame.getHeight();
+			setMapImage(nowTemple,walkCount);
+		}catch(Exception e){
 		}
 	}
+	
 	//IDとのヒモ付を一括して行う
 	void setFintViewID(){
 		infoDay =(TextView)findViewById(R.id.infoDay);
