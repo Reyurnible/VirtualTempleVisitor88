@@ -71,9 +71,12 @@ public class MainActivity extends Activity implements OnClickListener{
 	private ImageView templeImage;
 	private TextView infoNextTemple;
 	private TextView infoNextTempleDistance;
+	private ImageView mapImageView;
 	
 	private Button settingButton;	
 
+	private Bitmap mapImage;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -153,6 +156,7 @@ public class MainActivity extends Activity implements OnClickListener{
 		infoNextTemple = (TextView)findViewById(R.id.infoNextTemple);
 		infoNextTempleDistance = (TextView)findViewById(R.id.infoNextTempleDistance);
 		settingButton = (Button)findViewById(R.id.buttonSetting);
+		mapImageView  = (ImageView)findViewById(R.id.imageMap);
 	}
 	void setDate(){
 		Calendar cal = Calendar.getInstance();
@@ -185,6 +189,19 @@ public class MainActivity extends Activity implements OnClickListener{
 		nf=NumberFormat.getInstance();
 		nf.setMaximumFractionDigits(3);
 		infoNextTempleDistance.setText("次のお寺まで:\n"+nf.format(Temples.getDistance(temple, Temples.getTemple(temple.id+1)))+"km");
+		setTempleLink(temple);
+	}
+	void setTempleLink(final Temple temple){
+    	ImageView templeImg = (ImageView)findViewById(R.id.templeImage);
+    	templeImg.setClickable(true);
+    	templeImg.setOnClickListener(new OnClickListener() {
+            public void onClick(View v) {
+            	int id = temple.id - 1;
+                Intent objIntent = new Intent(getApplicationContext(),DetailActivity.class);
+                objIntent.putExtra("id",id);
+                startActivity(objIntent);
+            }
+        });
 	}
 	void loadData(){
 		SharedPreferenceManager spm = new SharedPreferenceManager(SP_KEY, Activity.MODE_PRIVATE,this);
@@ -198,8 +215,7 @@ public class MainActivity extends Activity implements OnClickListener{
 	void setMapImage(Temple temple,int steps){
 		if(temple!=null){
 			Point center = MapCalculation.getCentetPoint(temple, Temples.getTemple(temple.id+1), steps*stepWidth/ScaleMtoP);
-			Bitmap mapImage = MapCalculation.getMapBitmap(center,dispWidth,dispHeight,this);
-			ImageView mapImageView = (ImageView)findViewById(R.id.imageMap);
+			mapImage = MapCalculation.getMapBitmap(center,dispWidth,dispHeight,this);
 			mapImageView.setImageBitmap(mapImage);
 		}
 	}	
@@ -297,6 +313,9 @@ public class MainActivity extends Activity implements OnClickListener{
 			case R.id.buttonSetting:
 				Intent intent = new Intent(this,SettingActivity.class);
 				startActivity(intent);
+				mapImageView.setImageBitmap(null);
+				mapImage.recycle();
+				mapImage=null;
 				break;
 			default:
 				break;
