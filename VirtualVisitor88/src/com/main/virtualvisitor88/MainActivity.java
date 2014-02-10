@@ -57,7 +57,7 @@ public class MainActivity extends Activity implements OnClickListener{
 	boolean mBind 	= false;
 	
 	//現在の動的な情報
-	int walkCount=0;
+	static int walkCount=0;
 	Temple nowTemple;
 	Date startDay;
 	
