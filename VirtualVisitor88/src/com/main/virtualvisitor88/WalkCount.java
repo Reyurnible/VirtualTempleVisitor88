@@ -61,11 +61,11 @@ public class WalkCount  implements SensorEventListener, Runnable{
 	  	if(value < 9.0){
 	  		flg = 1;
 	  		walkNum++;
-	  	  Log.i("test",walkNum + " : " + flg + " : " + value);
+//	  	  Log.i("test",walkNum + " : " + flg + " : " + value);
 			int observerNum = walkCallBack.beginBroadcast();
-			Log.i("WalkService", "beginBroadcast" + observerNum);
+//			Log.i("WalkService", "beginBroadcast" + observerNum);
 			for(int i = 0; i < observerNum; i++){
-				Log.i("WalkService", "Count:"+i);
+//				Log.i("WalkService", "Count:"+i);
 				try {
 					//RemoteCallbackList#getBroadcastItem()Ç≈Callback interfaceÇéÊÇËèoÇµ
 					//Callback methodÇåƒÇ—èoÇ∑

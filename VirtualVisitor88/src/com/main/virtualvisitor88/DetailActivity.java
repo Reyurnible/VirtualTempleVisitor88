@@ -22,12 +22,12 @@ public class DetailActivity extends Activity{
 		
 		TypedArray typedArray = getResources().obtainTypedArray(R.array.temple_all);  
 		int length = typedArray.length();  
-		int resourceId = typedArray.getResourceId(0,0);    
+		int resourceId = typedArray.getResourceId(4,0);    
 		// 配列の値を取得(ここではarray_sub1の各値)  
 		String[] array_str = getResources().getStringArray(resourceId);  		
-		
+		TypedArray dataArray = getResources().obtainTypedArray(resourceId); 
 		Resources r = getResources();
-	    Bitmap bmp = BitmapFactory.decodeResource(r, R.drawable.t1);		
+	    Bitmap bmp = BitmapFactory.decodeResource(r, dataArray.getResourceId(2,0));		
 		
 		title  = (TextView) this.findViewById(R.id.shrine_name);
 		detail = (TextView) this.findViewById(R.id.shrine_detail);
