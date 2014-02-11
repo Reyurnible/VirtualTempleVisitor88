@@ -33,6 +33,8 @@ import android.view.Display;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.view.WindowManager;
 
 
@@ -40,6 +42,7 @@ import android.view.WindowManager;
 @SuppressLint("NewApi")
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class MainActivity extends Activity implements OnClickListener{
+	private final int WC = ViewGroup.LayoutParams.WRAP_CONTENT; 
 	//画面の大きさ
 	private static int dispWidth,dispHeight;
 	//ピクセルとメートルを変換する係数と一歩の大きさ
@@ -75,8 +78,9 @@ public class MainActivity extends Activity implements OnClickListener{
 	private ImageView mapImageView;
 	
 	private Button settingButton;	
-
+	private FrameLayout contentFrame;
 	private Bitmap mapImage;
+	private ImageView charImage;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -131,8 +135,10 @@ public class MainActivity extends Activity implements OnClickListener{
 		super.onResume();
 		settingButton.setBackgroundResource(R.drawable.parts_setting);
 		if(dispWidth!=0||dispHeight!=0){
+			updateTemple();
 			//マップの表示を行う 現在のお寺と歩数で場所を特定できる。
 			setMapImage(nowTemple,walkCount);
+			drawCharacter();
 		}
 	}
 	@Override
@@ -148,7 +154,7 @@ public class MainActivity extends Activity implements OnClickListener{
 		dispWidth = 500;
 		dispHeight = 1000;
 		try{
-			FrameLayout contentFrame = (FrameLayout)findViewById(R.id.content_frame);
+			contentFrame = (FrameLayout)findViewById(R.id.content_frame);
 			dispWidth = contentFrame.getWidth();
 			dispHeight = contentFrame.getHeight();
 			setMapImage(nowTemple,walkCount);
@@ -224,6 +230,11 @@ public class MainActivity extends Activity implements OnClickListener{
 		spm.setStepCount(walkCount);
 		spm.setTemple(nowTemple);
 	}
+	void updateTemple(){
+		double dis = walkCount*stepWidth;
+		nowTemple = Temples.getTemple(dis);
+	}
+	
 	//メインコンテンツの画像をセットする
 	void setMapImage(Temple temple,int steps){
 		if(temple!=null){
@@ -231,7 +242,7 @@ public class MainActivity extends Activity implements OnClickListener{
 			mapImage = MapCalculation.getMapBitmap(center,dispWidth,dispHeight,this);
 			mapImageView.setImageBitmap(mapImage);
 		}
-	}	
+	}
 	
 	@Override
 	public void setTitle(CharSequence title) {
@@ -288,7 +299,7 @@ public class MainActivity extends Activity implements OnClickListener{
 			walkCount++;
 			setInfo();
 		}
-    }; 
+    };
 	
 	void startService(){
 		if(mBind == false && walkCount == 0){
@@ -307,7 +318,16 @@ public class MainActivity extends Activity implements OnClickListener{
 	}
 	
 	public void drawCharacter(){
-		
+		/*
+		try{
+			charImage = new ImageView(this);
+		    charImage.setImageResource(R.drawable.arukuhito);
+		    charImage.setScaleType(ImageView.ScaleType.CENTER);
+		    contentFrame.addView(charImage, new LayoutParams(WC, WC));
+		}catch(Exception e){
+			
+		}
+		*/
 	}
 	
 	@Override
