@@ -58,10 +58,10 @@ public class WalkCount  implements SensorEventListener, Runnable{
 	  this.mAcceZ = event.values[2] * event.values[2];
 	  float value = (float)Math.sqrt(this.mAcceX + this.mAcceY + this.mAcceZ);
 	  if(flg == 0){
-	  	if(value < 9.0){
+	  	if(value < 8.0){
 	  		flg = 1;
 	  		walkNum++;
-//	  	  Log.i("test",walkNum + " : " + flg + " : " + value);
+	  	  Log.i("test",walkNum + " : " + flg + " : " + value);
 			int observerNum = walkCallBack.beginBroadcast();
 //			Log.i("WalkService", "beginBroadcast" + observerNum);
 			for(int i = 0; i < observerNum; i++){
@@ -76,7 +76,7 @@ public class WalkCount  implements SensorEventListener, Runnable{
 			walkCallBack.finishBroadcast();	  		
 	  	}
 	  }else{
-	  	if(value > 12.0){
+	  	if(value > 13.0){
 	  		flg = 0;
 	  	}  	
 	  }

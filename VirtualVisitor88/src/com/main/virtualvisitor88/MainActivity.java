@@ -54,7 +54,7 @@ public class MainActivity extends Activity implements OnClickListener{
 	SensorManager	sm;
 	WalkCount		wc;
 	private activityCallback mService;
-	boolean mBind 	= false;
+	static boolean mBind 	= false;
 	
 	//現在の動的な情報
 	static int walkCount=0;
@@ -116,7 +116,7 @@ public class MainActivity extends Activity implements OnClickListener{
         setInfo();
         setTemple(nowTemple);
         setDate();
-        WCSample();		
+		startService();		
 	}
 	
 	@Override
@@ -268,11 +268,6 @@ public class MainActivity extends Activity implements OnClickListener{
     };
 
 	private RemoteCallbackList<walkCallback> walkCallBack = new RemoteCallbackList<walkCallback>();	
-
-	void WCSample(){
-		startService();
-//		stopService();
-	}
 	
     private walkCallback wCallback = new walkCallback.Stub() { //Åy1Åz
 		@Override
@@ -285,7 +280,7 @@ public class MainActivity extends Activity implements OnClickListener{
     }; 
 	
 	void startService(){
-		if(mBind == false || this.walkCount > 0){
+		if(mBind == false && walkCount == 0){
 			bindService(new Intent( MainActivity.this, WalkService.class ), mConnection, BIND_AUTO_CREATE);		
 			startService( new Intent( MainActivity.this, WalkService.class ));	
 		}
@@ -338,5 +333,12 @@ public class MainActivity extends Activity implements OnClickListener{
 		}
 		// Handle your other action bar items...  
         return super.onOptionsItemSelected(item);
+	}
+	
+	public void initWalkNum(){
+		stopService();
+		walkCount = 0;
+		startService();
+		return;
 	}
 }

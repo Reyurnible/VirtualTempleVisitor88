@@ -4,7 +4,10 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
+import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
@@ -57,5 +60,21 @@ public class SettingActivity extends PreferenceActivity{
 			}
 		}); 
         addPreferencesFromResource(R.layout.activity_setting);
+	}
+	
+	@Override
+	protected void onResume() {
+	    super.onResume();
+//	    getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener((OnSharedPreferenceChangeListener) this);
+	}
+	 
+	@Override
+	protected void onPause() {
+	    super.onPause();
+//	    getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener((OnSharedPreferenceChangeListener) this);
+	}
+	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,  String key) {
+		EditTextPreference name_preference = (EditTextPreference)getPreferenceScreen().findPreference("name");
+		name_preference.setSummary(name_preference.getText());
 	}
 }
