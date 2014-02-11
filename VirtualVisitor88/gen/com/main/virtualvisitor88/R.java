@@ -116,11 +116,11 @@ public final class R {
         public static final int ic_drawer=0x7f020000;
         public static final int ic_launcher=0x7f020001;
         public static final int map=0x7f020002;
-        public static final int map_all=0x7f020003;
-        public static final int parts_map=0x7f020004;
-        public static final int parts_setting=0x7f020005;
-        public static final int parts_setting_f=0x7f020006;
-        public static final int shikoku=0x7f020007;
+        public static final int map2=0x7f020003;
+        public static final int map_all=0x7f020004;
+        public static final int parts_map=0x7f020005;
+        public static final int parts_setting=0x7f020006;
+        public static final int parts_setting_f=0x7f020007;
         public static final int t1=0x7f020008;
         public static final int t10=0x7f020009;
         public static final int t11=0x7f02000a;

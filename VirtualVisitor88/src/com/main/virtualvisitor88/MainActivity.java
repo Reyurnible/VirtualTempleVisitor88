@@ -139,6 +139,7 @@ public class MainActivity extends Activity implements OnClickListener{
 	protected void onDestroy() {
 		super.onDestroy();
 		//SPにデータを保存する
+		saveData();
 	}
 	//ディスプレイの大きさを取得
 	@Override
@@ -212,6 +213,16 @@ public class MainActivity extends Activity implements OnClickListener{
 		startDay = spm.getDate();
 		//歩幅（身長*0.5)
 		stepWidth=spm.getHeight()*0.5;
+		if(startDay.getTime()<=10){
+			Calendar cal = Calendar.getInstance();
+	        Date toDay = cal.getTime();
+			spm.setDate(toDay);
+		}
+	}
+	void saveData(){
+		SharedPreferenceManager spm = new SharedPreferenceManager(SP_KEY, Activity.MODE_PRIVATE,this);
+		spm.setStepCount(walkCount);
+		spm.setTemple(nowTemple);
 	}
 	//メインコンテンツの画像をセットする
 	void setMapImage(Temple temple,int steps){
