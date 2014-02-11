@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
+import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
@@ -17,7 +18,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 
-public class SettingActivity extends PreferenceActivity{
+public class SettingActivity extends PreferenceActivity implements OnSharedPreferenceChangeListener{
 	
 	Button resetButton;
 	AlertDialog.Builder alertDialog;
@@ -60,21 +61,32 @@ public class SettingActivity extends PreferenceActivity{
 			}
 		}); 
         addPreferencesFromResource(R.layout.activity_setting);
+		setPreferences();
 	}
 	
 	@Override
 	protected void onResume() {
 	    super.onResume();
-//	    getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener((OnSharedPreferenceChangeListener) this);
+	    getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
 	}
 	 
 	@Override
 	protected void onPause() {
 	    super.onPause();
-//	    getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener((OnSharedPreferenceChangeListener) this);
+	    getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
 	}
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,  String key) {
-		EditTextPreference name_preference = (EditTextPreference)getPreferenceScreen().findPreference("name");
+		setPreferences();
+	}
+	
+	void setPreferences(){
+		EditTextPreference name_preference 		= (EditTextPreference)getPreferenceScreen().findPreference("name");
+		EditTextPreference tall_preference 		= (EditTextPreference)getPreferenceScreen().findPreference("tall");
+		EditTextPreference weight_preference 	= (EditTextPreference)getPreferenceScreen().findPreference("weight");
+		ListPreference sex_preference 			= (ListPreference)getPreferenceScreen().findPreference("sex");
 		name_preference.setSummary(name_preference.getText());
+		tall_preference.setSummary(tall_preference.getText());
+		weight_preference.setSummary(weight_preference.getText());
+		sex_preference.setSummary(sex_preference.getValue());
 	}
 }
