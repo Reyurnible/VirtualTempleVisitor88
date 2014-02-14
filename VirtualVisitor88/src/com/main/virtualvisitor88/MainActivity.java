@@ -312,9 +312,7 @@ public class MainActivity extends Activity implements OnClickListener{
     };
 	
 	void startService(){
-		if(mBind == true && walkCount != 0){
-			stopService();
-		}
+		stopService();
 		bindService(new Intent( MainActivity.this, WalkService.class ), mConnection, BIND_AUTO_CREATE);		
 		startService( new Intent( MainActivity.this, WalkService.class ));	
 	
