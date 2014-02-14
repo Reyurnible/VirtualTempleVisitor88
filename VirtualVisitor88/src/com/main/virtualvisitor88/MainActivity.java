@@ -42,9 +42,11 @@ import android.view.WindowManager;
 @SuppressLint("NewApi")
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class MainActivity extends Activity implements OnClickListener{
-	private final int WC = ViewGroup.LayoutParams.WRAP_CONTENT; 
+	final int CharacterImageHeight = 160;
 	//画面の大きさ
 	private static int dispWidth,dispHeight;
+	private Point characterPosition=new Point(0,0);
+	private Point centerPoint=new Point(0,0);
 	//ピクセルとメートルを変換する係数と一歩の大きさ
 	final Double ScaleMtoP = 1.2;
 	//この値は設定から呼び出す。
@@ -138,7 +140,6 @@ public class MainActivity extends Activity implements OnClickListener{
 			updateTemple();
 			//マップの表示を行う 現在のお寺と歩数で場所を特定できる。
 			setMapImage(nowTemple,walkCount);
-			drawCharacter();
 		}
 	}
 	@Override
@@ -173,6 +174,7 @@ public class MainActivity extends Activity implements OnClickListener{
 		infoNextTempleDistance = (TextView)findViewById(R.id.infoNextTempleDistance);
 		settingButton = (Button)findViewById(R.id.buttonSetting);
 		mapImageView  = (ImageView)findViewById(R.id.imageMap);
+		charImage = (ImageView)findViewById(R.id.imageCharacter);
 	}
 	void setDate(){
 		Calendar cal = Calendar.getInstance();
@@ -238,9 +240,17 @@ public class MainActivity extends Activity implements OnClickListener{
 	//メインコンテンツの画像をセットする
 	void setMapImage(Temple temple,int steps){
 		if(temple!=null){
+			//image center
 			Point center = MapCalculation.getCentetPoint(temple, Temples.getTemple(temple.id+1), steps*stepWidth/ScaleMtoP);
+			centerPoint = center;
+			//width and height plus center
+			center = MapCalculation.getCharacterPoint(center, dispWidth, dispHeight);
+			//get map rect image
 			mapImage = MapCalculation.getMapBitmap(center,dispWidth,dispHeight,this);
 			mapImageView.setImageBitmap(mapImage);
+			Log.i("canter sub",(centerPoint.x-center.x)+" : "+(centerPoint.y-center.y));
+			characterPosition = new Point(dispWidth+(center.x-centerPoint.x),dispHeight+(center.y-centerPoint.y)-CharacterImageHeight);
+			drawCharacter(true);
 		}
 	}
 	
@@ -317,17 +327,16 @@ public class MainActivity extends Activity implements OnClickListener{
 		}		
 	}
 	
-	public void drawCharacter(){
-		/*
-		try{
-			charImage = new ImageView(this);
-		    charImage.setImageResource(R.drawable.arukuhito);
-		    charImage.setScaleType(ImageView.ScaleType.CENTER);
-		    contentFrame.addView(charImage, new LayoutParams(WC, WC));
-		}catch(Exception e){
-			
+	public void drawCharacter(boolean visible){
+		if(visible){
+			charImage.setVisibility(View.VISIBLE);
+			Log.i("character point","x:"+characterPosition.x+" y:"+characterPosition.y);
+			Log.i("center point","x:"+dispWidth/2+" y:"+dispHeight/2);
+			charImage.setTranslationX(characterPosition.x);
+			charImage.setTranslationY(characterPosition.y);
+		}else{
+			charImage.setVisibility(View.INVISIBLE);
 		}
-		*/
 	}
 	
 	@Override
