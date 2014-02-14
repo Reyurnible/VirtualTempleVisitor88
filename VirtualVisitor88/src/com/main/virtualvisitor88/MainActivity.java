@@ -376,9 +376,10 @@ public class MainActivity extends Activity implements OnClickListener{
 	}
 	
 	public void initWalkNum(){
-		stopService();
+//		stopService();
 		walkCount = 0;
-		startService();
+		setInfo();
+//		startService();
 		return;
 	}
 }
