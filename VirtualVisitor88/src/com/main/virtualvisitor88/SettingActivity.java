@@ -44,7 +44,7 @@ public class SettingActivity extends PreferenceActivity implements OnSharedPrefe
 				 
 				    public void onClick(DialogInterface dialog, int which) {
 				    	MainActivity.walkCount = 0;
-
+				    	MainActivity.mBind = false;
 				    }
 				});
 				// NGボタンの設定
